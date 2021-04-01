@@ -1,33 +1,33 @@
 # Difficulty Simulator
 
-[![Build Status](https://github.com/seanvaleo/difficulty_simulator/workflows/build/badge.svg)](https://github.com/seanvaleo/difficulty_simulator/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/seanvaleo/difficulty_simulator)](https://goreportcard.com/report/github.com/seanvaleo/difficulty_simulator)
+[![Build Status](https://github.com/seanvaleo/dsim/workflows/build/badge.svg)](https://github.com/seanvaleo/dsim/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/seanvaleo/dsim)](https://goreportcard.com/report/github.com/seanvaleo/dsim)
 
 Simulate the effectiveness of various blockchain difficulty algorithms in terms of volatility and accuracy.
 
 
-## Performance
+### Performance
 
 Algorithm | S.D. | Mean
 ------------ | ------------ | ------------
 algo1 | 0 | 0
 
 
-## Installation
+### Installation
 
 Install Go: https://golang.org/doc/install
 
-Download sources and install: `go get github.com/seanvaleo/difficulty_simulator`
+Download sources and install: `go get github.com/seanvaleo/dsim`
 
 
-## Usage
+### Usage
 
 ```
 dsim
 ```
 
 
-## Configuration
+### Configuration
 
 Configure environment variables in the `.env` file.
 
