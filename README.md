@@ -1,6 +1,6 @@
 # Difficulty Simulator
 
-[![Build Status](https://github.com/seanvaleo/dsim/workflows/go/badge.svg)](https://github.com/seanvaleo/dsim/actions)
+[![Build Status](https://github.com/seanvaleo/dsim/workflows/go.yml/badge.svg)](https://github.com/seanvaleo/dsim/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/seanvaleo/dsim)](https://goreportcard.com/report/github.com/seanvaleo/dsim)
 
 Simulate the effectiveness of various blockchain difficulty algorithms in terms of volatility and accuracy.
