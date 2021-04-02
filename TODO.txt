@@ -1,2 +1,2 @@
-determine which algos to use
-create simulator
+implement algos
+simulate mining

@@ -12,7 +12,7 @@ import (
 // Cfg is a global Config instance
 var Cfg Config
 
-// Config is a Configuration type
+// Config represents a configuration object
 type Config struct {
 	TargetBlockTime uint
 	Blocks          uint
@@ -20,6 +20,7 @@ type Config struct {
 	MinerHashTH     uint
 }
 
+// Init instantiates Cfg
 func Init() {
 	Cfg.TargetBlockTime = uint(getEnvAsInt("TARGET_BLOCK_TIME", 60))
 	Cfg.Blocks = uint(getEnvAsInt("BLOCKS", 1000))
@@ -27,12 +28,13 @@ func Init() {
 	Cfg.MinerHashTH = uint(getEnvAsInt("MINER_HASH_TH", 100))
 }
 
+// Print prints the current configuration in an easy to read format
 func Print() {
 	s, _ := json.MarshalIndent(Cfg, "", "\t")
 	log.Info("Configuration: \n", string(s))
 }
 
-// Simple helper function to read an environment or return a default value
+// getEnv is a simple helper function to read an environment or return a default value
 func getEnv(key string, defaultVal string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
@@ -41,7 +43,7 @@ func getEnv(key string, defaultVal string) string {
 	return defaultVal
 }
 
-// Simple helper function to read an environment variable into integer or return a default value
+// getEnvAsInt is a simple helper function to read an environment variable into integer or return a default value
 func getEnvAsInt(name string, defaultVal int) int {
 	valueStr := getEnv(name, "")
 	if value, err := strconv.Atoi(valueStr); err == nil {
@@ -51,7 +53,7 @@ func getEnvAsInt(name string, defaultVal int) int {
 	return defaultVal
 }
 
-// Helper to read an environment variable into a bool or return default value
+// getEnvAsBool is a simple helper function to read an environment variable into a bool or return default value
 func getEnvAsBool(name string, defaultVal bool) bool {
 	valStr := getEnv(name, "")
 	if val, err := strconv.ParseBool(valStr); err == nil {

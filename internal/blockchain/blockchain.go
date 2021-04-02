@@ -7,18 +7,21 @@ import (
 	"github.com/seanvaleo/dsim/pkg/dsim"
 )
 
+// Blockchain represents a blockchain object
 type Blockchain struct {
 	name      string
 	chain     []*Block
 	algorithm dsim.Algorithm
 }
 
+// Block represents a single block
 type Block struct {
 	height     uint64
 	difficulty *big.Int
 	blockTime  uint
 }
 
+// New instantiates and returns a blockchain
 func New(name string, algorithm dsim.Algorithm) *Blockchain {
 	return &Blockchain{
 		name:      name,
@@ -27,10 +30,12 @@ func New(name string, algorithm dsim.Algorithm) *Blockchain {
 	}
 }
 
+// Height returns the height of the blockchain
 func (b *Blockchain) Height() uint64 {
 	return uint64(len(b.chain)) - 1
 }
 
+// AddBlock appends a block to the blockchain
 func (b *Blockchain) AddBlock(blockTime uint) {
 	block := &Block{
 		height:     b.Height(),
@@ -41,14 +46,17 @@ func (b *Blockchain) AddBlock(blockTime uint) {
 	b.chain = append(b.chain, block)
 }
 
+// Name returns the name of the blockchain
 func (b *Blockchain) Name() string {
 	return b.name
 }
 
+// AlgorithmName returns the name of the blockchain's difficulty algorithm
 func (b *Blockchain) AlgorithmName() string {
 	return b.algorithm.Name()
 }
 
+// Statistics generates standard deviation and mean values for the block interval time
 func (b *Blockchain) Statistics() (sd, mean float64) {
 
 	var sum float64

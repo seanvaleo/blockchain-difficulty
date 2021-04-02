@@ -9,6 +9,7 @@ import (
 	"github.com/seanvaleo/dsim/pkg/dsim"
 )
 
+// Run executes the simulation
 func Run(b dsim.Blockchain) func() error {
 	return func() error {
 		for i := uint(0); i < config.Cfg.Blocks; i++ {
@@ -21,8 +22,8 @@ func Run(b dsim.Blockchain) func() error {
 	}
 }
 
+// printResults prints the results to std output in a tabulated format
 func printResults(b dsim.Blockchain) {
-
 	sd, mean := b.Statistics()
 
 	w := tabwriter.NewWriter(os.Stdout, 20, 2, 1, ' ', 0)

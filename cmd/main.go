@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	log.Info("Running Difficulty Simulator v0.1")
 
 	config.Init()
@@ -23,10 +22,10 @@ func main() {
 	ctx := context.Context(context.Background())
 	g, _ := errgroup.WithContext(ctx)
 
-	g.Go(simulator.Run(blockchain.New("Blockchain 1", algorithms.NewExample())))
-	g.Go(simulator.Run(blockchain.New("Blockchain 2", algorithms.NewExample())))
-	g.Go(simulator.Run(blockchain.New("Blockchain 3", algorithms.NewExample())))
-	g.Go(simulator.Run(blockchain.New("Blockchain 4", algorithms.NewExample())))
+	g.Go(simulator.Run(blockchain.New("Blockchain 1", algorithms.NewSMA(10))))
+	g.Go(simulator.Run(blockchain.New("Blockchain 2", algorithms.NewSMA(20))))
+	g.Go(simulator.Run(blockchain.New("Blockchain 3", algorithms.NewSMA(50))))
+	g.Go(simulator.Run(blockchain.New("Blockchain 4", algorithms.NewSMA(100))))
 
 	if err := g.Wait(); err != nil {
 		log.Error(err)
