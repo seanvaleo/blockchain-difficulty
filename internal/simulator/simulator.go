@@ -1,26 +1,31 @@
 package simulator
 
 import (
+	"fmt"
+	"os"
+	"text/tabwriter"
+
+	"github.com/seanvaleo/dsim/internal/config"
 	"github.com/seanvaleo/dsim/pkg/dsim"
-	log "github.com/sirupsen/logrus"
 )
 
 func Run(b dsim.Blockchain) func() error {
 	return func() error {
-		for i := 0; i < 10; i++ {
-			b.AddBlock()
+		for i := uint(0); i < config.Cfg.Blocks; i++ {
+			b.AddBlock(60)
 		}
 
-		Report(b)
+		printResults(b)
 
 		return nil
 	}
 }
 
-func Report(b dsim.Blockchain) {
-	// b.name
-	// algo.name
-	// s.d.
-	// mean
-	log.Info(b)
+func printResults(b dsim.Blockchain) {
+
+	sd, mean := b.Statistics()
+
+	w := tabwriter.NewWriter(os.Stdout, 20, 2, 1, ' ', 0)
+	fmt.Fprintln(w, b.Name(), "\t", b.AlgorithmName(), "\tSD:", sd, "\tMean:", mean, "\t")
+	w.Flush()
 }

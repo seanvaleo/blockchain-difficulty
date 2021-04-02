@@ -23,9 +23,14 @@ func main() {
 	ctx := context.Context(context.Background())
 	g, _ := errgroup.WithContext(ctx)
 
-	g.Go(simulator.Run(blockchain.New("Blockchain1", algorithms.NewExample())))
+	g.Go(simulator.Run(blockchain.New("Blockchain 1", algorithms.NewExample())))
+	g.Go(simulator.Run(blockchain.New("Blockchain 2", algorithms.NewExample())))
+	g.Go(simulator.Run(blockchain.New("Blockchain 3", algorithms.NewExample())))
+	g.Go(simulator.Run(blockchain.New("Blockchain 4", algorithms.NewExample())))
 
 	if err := g.Wait(); err != nil {
 		log.Error(err)
+	} else {
+		log.Info("All results generated")
 	}
 }

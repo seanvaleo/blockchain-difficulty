@@ -1,8 +1,8 @@
 package blockchain
 
 import (
+	"math"
 	"math/big"
-	"time"
 
 	"github.com/seanvaleo/dsim/pkg/dsim"
 )
@@ -16,7 +16,7 @@ type Blockchain struct {
 type Block struct {
 	height     uint64
 	difficulty *big.Int
-	timestamp  time.Time
+	blockTime  uint
 }
 
 func New(name string, algorithm dsim.Algorithm) *Blockchain {
@@ -31,12 +31,38 @@ func (b *Blockchain) Height() uint64 {
 	return uint64(len(b.chain)) - 1
 }
 
-func (b *Blockchain) AddBlock() {
+func (b *Blockchain) AddBlock(blockTime uint) {
 	block := &Block{
 		height:     b.Height(),
 		difficulty: b.algorithm.NextDifficulty(),
-		timestamp:  time.Now(),
+		blockTime:  blockTime,
 	}
 
 	b.chain = append(b.chain, block)
+}
+
+func (b *Blockchain) Name() string {
+	return b.name
+}
+
+func (b *Blockchain) AlgorithmName() string {
+	return b.algorithm.Name()
+}
+
+func (b *Blockchain) Statistics() (sd, mean float64) {
+
+	var sum float64
+	count := float64(len(b.chain))
+
+	for _, v := range b.chain {
+		sum += float64(v.blockTime)
+	}
+	mean = sum / count
+
+	for _, v := range b.chain {
+		sd += math.Pow(float64(v.blockTime)-mean, 2)
+	}
+	sd = math.Sqrt(sd / count)
+
+	return sd, mean
 }
