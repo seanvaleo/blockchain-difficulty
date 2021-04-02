@@ -1,0 +1,3 @@
+determine which algos to use
+create simulator
+calculate standard deviation and mean

@@ -33,5 +33,8 @@ Configure environment variables in the `.env` file.
 
 Default values:
 ```
-
+TARGET_BLOCK_TIME=60
+BLOCKS=1000
+MINER_COUNT=100
+MINER_HASH_TH=100
 ```
