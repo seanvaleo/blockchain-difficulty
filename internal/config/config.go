@@ -14,18 +14,18 @@ var Cfg Config
 
 // Config represents a configuration object
 type Config struct {
-	TargetBlockTime uint
-	Blocks          uint
-	MinerCount      uint
-	MinerHashTH     uint
+	TargetBlockTime uint64
+	Blocks          uint64
+	MinerCount      uint64
+	MinerHashTH     uint64
 }
 
 // Init instantiates Cfg
 func Init() {
-	Cfg.TargetBlockTime = uint(getEnvAsInt("TARGET_BLOCK_TIME", 60))
-	Cfg.Blocks = uint(getEnvAsInt("BLOCKS", 1000))
-	Cfg.MinerCount = uint(getEnvAsInt("MINER_COUNT", 100))
-	Cfg.MinerHashTH = uint(getEnvAsInt("MINER_HASH_TH", 100))
+	Cfg.TargetBlockTime = uint64(getEnvAsInt("TARGET_BLOCK_TIME", 60))
+	Cfg.Blocks = uint64(getEnvAsInt("BLOCKS", 1000))
+	Cfg.MinerCount = uint64(getEnvAsInt("MINER_COUNT", 100))
+	Cfg.MinerHashTH = uint64(getEnvAsInt("MINER_HASH_TH", 100))
 }
 
 // Print prints the current configuration in an easy to read format

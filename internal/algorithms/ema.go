@@ -7,31 +7,34 @@ import (
 	"github.com/seanvaleo/dsim/pkg/dsim"
 )
 
-// SMA implements a Simple Moving Average equation, using the average
+// EMA implements a Simple Moving Average equation, using the average
 // block time of the most recent X blocks to estimate a more suitable
 // difficulty
-type SMA struct {
+type EMA struct {
 	name   string
 	window uint64
 }
 
-// NewSMA instantiates and returns a new SMA
-func NewSMA(window uint64) *SMA {
-	return &SMA{
-		name:   "SMA-" + fmt.Sprint(window),
+// NewEMA instantiates and returns a new EMA
+func NewEMA(window uint64) *EMA {
+	return &EMA{
+		name:   "EMA-" + fmt.Sprint(window),
 		window: window,
 	}
 }
 
 // Name returns the algorithm name
-func (s *SMA) Name() string {
+func (s *EMA) Name() string {
 	return s.name
 }
 
 // NextDifficulty calculates the next difficulty
-func (s *SMA) NextDifficulty(chain []*dsim.Block) uint64 {
+func (s *EMA) NextDifficulty(chain []*dsim.Block) uint64 {
 
 	var sumBT, meanBT, sumD, meanD uint64
+
+	// k := 2 / (float64(s.window) + 1)
+	// fmt.Println(k)
 
 	i := uint64(len(chain))
 	if i < s.window {

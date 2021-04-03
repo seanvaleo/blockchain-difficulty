@@ -1,2 +1,2 @@
-implement algos
-simulate mining
+ema algo
+use bigint

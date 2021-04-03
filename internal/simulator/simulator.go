@@ -12,8 +12,13 @@ import (
 // Run executes the simulation
 func Run(b dsim.Blockchain) func() error {
 	return func() error {
-		for i := uint(0); i < config.Cfg.Blocks; i++ {
-			b.AddBlock(60)
+		var difficulty, blockTime uint64
+
+		for i := uint64(0); i < config.Cfg.Blocks; i++ {
+			difficulty = b.Difficulty()
+			blockTime = difficulty / (config.Cfg.MinerHashTH * config.Cfg.MinerCount)
+
+			b.AddBlock(blockTime)
 		}
 
 		printResults(b)
