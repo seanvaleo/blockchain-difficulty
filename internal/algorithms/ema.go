@@ -47,7 +47,7 @@ func (e *EMA) NextDifficulty(chain []*dsim.Block) uint64 {
 	e.lastBlockTimeEMA = emaBT
 	e.lastDifficultyEMA = emaD
 
-	return uint64(emaD * (float64(config.Cfg.TargetBlockTime) / emaBT))
+	return uint64(emaD * float64(config.Cfg.TargetBlockTime) / emaBT)
 }
 
 // ema calculates the Exponential Moving Averages for Difficulty and BlockTime

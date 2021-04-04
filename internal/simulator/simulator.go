@@ -30,7 +30,7 @@ func consistentHashPower(b dsim.Blockchain) {
 func printResults(b dsim.Blockchain) {
 	sd, mean := statistics(b)
 
-	w := tabwriter.NewWriter(os.Stdout, 20, 2, 1, ' ', 0)
+	w := tabwriter.NewWriter(os.Stdout, 30, 2, 1, ' ', 0)
 	fmt.Fprintln(w, b.Name(), "\t", b.Algorithm().Name(), "\tSD:", sd, "\tMean:", mean, "\t")
 	w.Flush()
 }
