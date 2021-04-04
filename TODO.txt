@@ -1,3 +1,3 @@
 write tests
-add multiple simulation waves: vary network rate consistently
+add multiple simulations to vary network rate consistently
 add more algos

@@ -22,10 +22,10 @@ func main() {
 	ctx := context.Context(context.Background())
 	g, _ := errgroup.WithContext(ctx)
 
-	//g.Go(simulator.Run(blockchain.New("Blockchain 1", algorithms.NewSMA(10))))
-	//g.Go(simulator.Run(blockchain.New("Blockchain 2", algorithms.NewSMA(20))))
+	g.Go(simulator.Run(blockchain.New("Blockchain 1", algorithms.NewSMA(10))))
+	g.Go(simulator.Run(blockchain.New("Blockchain 2", algorithms.NewSMA(20))))
 	g.Go(simulator.Run(blockchain.New("Blockchain 3", algorithms.NewSMA(50))))
-	//g.Go(simulator.Run(blockchain.New("Blockchain 4", algorithms.NewSMA(100))))
+	g.Go(simulator.Run(blockchain.New("Blockchain 4", algorithms.NewSMA(100))))
 	//g.Go(simulator.Run(blockchain.New("Blockchain 5", algorithms.NewEMA(10))))
 	//g.Go(simulator.Run(blockchain.New("Blockchain 6", algorithms.NewEMA(20))))
 	//g.Go(simulator.Run(blockchain.New("Blockchain 7", algorithms.NewEMA(50))))

@@ -42,7 +42,7 @@ func (s *SMA) NextDifficulty(chain []*dsim.Block) uint64 {
 
 	smaD, smaBT := sma(chain, s.window)
 
-	return uint64(smaD * (float64(config.Cfg.TargetBlockTime) / smaBT))
+	return uint64(smaD * float64(config.Cfg.TargetBlockTime) / smaBT)
 }
 
 // sma calculates the Simple Moving Averages for Difficulty and BlockTime
@@ -60,6 +60,5 @@ func sma(chain []*dsim.Block, window uint64) (smaD, smaBT float64) {
 	smaBT = sumBT / float64(window)
 	smaD = sumD / float64(window)
 
-	fmt.Println(smaBT, smaD)
 	return
 }

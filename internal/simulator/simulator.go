@@ -43,7 +43,6 @@ func statistics(b dsim.Blockchain) (sd, mean float64) {
 
 	var sum, count float64
 	for i < b.Length() {
-		fmt.Println(b.GetBlock(i))
 		sum += float64(b.GetBlock(i).BlockTime)
 		count++
 		i++
