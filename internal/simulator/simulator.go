@@ -20,6 +20,7 @@ func Run(b dsim.Blockchain) func() error {
 	}
 }
 
+// consistentHashPower simulates adding blocks in a consistent network
 func consistentHashPower(b dsim.Blockchain) {
 	for i := uint64(0); i < config.Cfg.Blocks; i++ {
 		b.AddBlock(config.Cfg.MinerHashTH * config.Cfg.StartMinerCount)
@@ -30,7 +31,7 @@ func consistentHashPower(b dsim.Blockchain) {
 func printResults(b dsim.Blockchain) {
 	sd, mean := statistics(b)
 
-	w := tabwriter.NewWriter(os.Stdout, 30, 2, 1, ' ', 0)
+	w := tabwriter.NewWriter(os.Stdout, 28, 8, 0, ' ', 0)
 	fmt.Fprintln(w, b.Name(), "\t", b.Algorithm().Name(), "\tSD:", sd, "\tMean:", mean, "\t")
 	w.Flush()
 }
