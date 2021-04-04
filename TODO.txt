@@ -1,2 +1,3 @@
-ema algo
-use bigint
+write tests
+add multiple simulation waves: vary network rate consistently
+add more algos

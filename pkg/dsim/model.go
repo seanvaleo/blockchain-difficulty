@@ -4,5 +4,5 @@ package dsim
 type Block struct {
 	Height     uint64
 	Difficulty uint64
-	BlockTime  uint64
+	BlockTime  float64
 }

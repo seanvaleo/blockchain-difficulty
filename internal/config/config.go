@@ -16,7 +16,7 @@ var Cfg Config
 type Config struct {
 	TargetBlockTime uint64
 	Blocks          uint64
-	MinerCount      uint64
+	StartMinerCount uint64
 	MinerHashTH     uint64
 }
 
@@ -24,7 +24,7 @@ type Config struct {
 func Init() {
 	Cfg.TargetBlockTime = uint64(getEnvAsInt("TARGET_BLOCK_TIME", 60))
 	Cfg.Blocks = uint64(getEnvAsInt("BLOCKS", 1000))
-	Cfg.MinerCount = uint64(getEnvAsInt("MINER_COUNT", 100))
+	Cfg.StartMinerCount = uint64(getEnvAsInt("START_MINER_COUNT", 100))
 	Cfg.MinerHashTH = uint64(getEnvAsInt("MINER_HASH_TH", 100))
 }
 

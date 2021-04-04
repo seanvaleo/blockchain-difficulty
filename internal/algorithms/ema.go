@@ -11,8 +11,10 @@ import (
 // block time of the most recent X blocks to estimate a more suitable
 // difficulty
 type EMA struct {
-	name   string
-	window uint64
+	name              string
+	window            uint64
+	lastDifficultyEMA float64
+	lastBlockTimeEMA  float64
 }
 
 // NewEMA instantiates and returns a new EMA
@@ -24,32 +26,44 @@ func NewEMA(window uint64) *EMA {
 }
 
 // Name returns the algorithm name
-func (s *EMA) Name() string {
-	return s.name
+func (e *EMA) Name() string {
+	return e.name
+}
+
+// Window returns the algorithm window
+func (e *EMA) Window() uint64 {
+	return e.window
 }
 
 // NextDifficulty calculates the next difficulty
-func (s *EMA) NextDifficulty(chain []*dsim.Block) uint64 {
-
-	var sumBT, meanBT, sumD, meanD uint64
-
-	// k := 2 / (float64(s.window) + 1)
-	// fmt.Println(k)
-
+func (e *EMA) NextDifficulty(chain []*dsim.Block) uint64 {
 	i := uint64(len(chain))
-	if i < s.window {
+	if i < e.window {
 		return chain[i-1].Difficulty
 	}
 
-	j := i - s.window
+	emaD, emaBT := ema(chain, e.window, e.lastBlockTimeEMA, e.lastDifficultyEMA)
 
+	e.lastBlockTimeEMA = emaBT
+	e.lastDifficultyEMA = emaD
+
+	return uint64(emaD * (float64(config.Cfg.TargetBlockTime) / emaBT))
+}
+
+// ema calculates the Exponential Moving Averages for Difficulty and BlockTime
+// uses SMA as the first EMA
+func ema(chain []*dsim.Block, window uint64, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
+	i := uint64(len(chain))
+	if i == window {
+		return sma(chain, window)
+	}
+
+	j := i - window
 	for i > j {
 		i--
-		sumBT += chain[i].BlockTime
-		sumD += chain[i].Difficulty
+		emaBT = (chain[i].BlockTime-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
+		emaD = (float64(chain[i].Difficulty)-lastDifficultyEMA)*(2/(float64(window)+1)) + lastDifficultyEMA
 	}
-	meanBT = sumBT / s.window
-	meanD = sumD / s.window
 
-	return (meanD * config.Cfg.TargetBlockTime) / meanBT
+	return
 }

@@ -1,8 +1,6 @@
 package blockchain
 
 import (
-	"math"
-
 	"github.com/seanvaleo/dsim/pkg/dsim"
 )
 
@@ -36,52 +34,35 @@ func (b *Blockchain) addGenesisBlock() {
 	b.chain = append(b.chain, block)
 }
 
-// Height returns the height of the blockchain
-func (b *Blockchain) Height() uint64 {
-	return uint64(len(b.chain))
-}
-
-// AddBlock appends a block to the blockchain
-func (b *Blockchain) AddBlock(blockTime uint64) {
-	block := &dsim.Block{
-		Height:     b.Height(),
-		Difficulty: b.algorithm.NextDifficulty(b.chain),
-		BlockTime:  blockTime,
-	}
-
-	b.chain = append(b.chain, block)
-}
-
-// Difficulty returns the difficulty of the lastblock
-func (b *Blockchain) Difficulty() uint64 {
-	return b.chain[b.Height()-1].Difficulty
-}
-
 // Name returns the name of the blockchain
 func (b *Blockchain) Name() string {
 	return b.name
 }
 
-// AlgorithmName returns the name of the blockchain's difficulty algorithm
-func (b *Blockchain) AlgorithmName() string {
-	return b.algorithm.Name()
+// Algorithm returns the algorithm of the blockchain
+func (b *Blockchain) Algorithm() dsim.Algorithm {
+	return b.algorithm
 }
 
-// Statistics generates standard deviation and mean values for the block interval time
-func (b *Blockchain) Statistics() (sd, mean float64) {
+// Length returns the length of the blockchain
+func (b *Blockchain) Length() uint64 {
+	return uint64(len(b.chain))
+}
 
-	var sum float64
-	count := float64(len(b.chain))
+// AddBlock appends a block to the blockchain
+func (b *Blockchain) AddBlock(hashPower uint64) {
+	difficulty := b.algorithm.NextDifficulty(b.chain)
 
-	for _, v := range b.chain {
-		sum += float64(v.BlockTime)
+	block := &dsim.Block{
+		Height:     b.Length(),
+		Difficulty: difficulty,
+		BlockTime:  float64(difficulty) / float64(hashPower),
 	}
-	mean = sum / count
 
-	for _, v := range b.chain {
-		sd += math.Pow(float64(v.BlockTime)-mean, 2)
-	}
-	sd = math.Sqrt(sd / count)
+	b.chain = append(b.chain, block)
+}
 
-	return sd, mean
+// GetBlock reads a block from the blockchain
+func (b *Blockchain) GetBlock(height uint64) *dsim.Block {
+	return b.chain[height]
 }

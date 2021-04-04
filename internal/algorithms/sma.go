@@ -28,25 +28,38 @@ func (s *SMA) Name() string {
 	return s.name
 }
 
+// Window returns the algorithm window
+func (s *SMA) Window() uint64 {
+	return s.window
+}
+
 // NextDifficulty calculates the next difficulty
 func (s *SMA) NextDifficulty(chain []*dsim.Block) uint64 {
-
-	var sumBT, meanBT, sumD, meanD uint64
-
 	i := uint64(len(chain))
 	if i < s.window {
 		return chain[i-1].Difficulty
 	}
 
-	j := i - s.window
+	smaD, smaBT := sma(chain, s.window)
+
+	return uint64(smaD * (float64(config.Cfg.TargetBlockTime) / smaBT))
+}
+
+// sma calculates the Simple Moving Averages for Difficulty and BlockTime
+func sma(chain []*dsim.Block, window uint64) (smaD, smaBT float64) {
+	var sumBT, sumD float64
+
+	i := uint64(len(chain))
+	j := i - window
 
 	for i > j {
 		i--
 		sumBT += chain[i].BlockTime
-		sumD += chain[i].Difficulty
+		sumD += float64(chain[i].Difficulty)
 	}
-	meanBT = sumBT / s.window
-	meanD = sumD / s.window
+	smaBT = sumBT / float64(window)
+	smaD = sumD / float64(window)
 
-	return (meanD * config.Cfg.TargetBlockTime) / meanBT
+	fmt.Println(smaBT, smaD)
+	return
 }
