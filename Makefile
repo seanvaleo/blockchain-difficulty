@@ -1,7 +1,7 @@
-check: fmt vet lint test
+build:
+	go build -o dsim cmd/main.go
 
-install: check
-	go build -i -o $(GOPATH)/bin/dsim cmd/main.go
+check: fmt vet lint test
 
 vet:
 	go vet ./...
