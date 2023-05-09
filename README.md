@@ -35,8 +35,12 @@ cd blockchain-difficulty
 go run cmd/main.go
 ```
 
-Configure global settings using environment variables in the project's `.env` file. Default values:
+Configure global settings using environment variables in the project's `.env` file. Options/defaults:
 ```
+TARGET_BLOCK_TIME_MINUTES=10
+SIMULATION_DAYS=365
+INITIAL_NETWORK_HASH_POWER=1000000
+NETWORK_DAILY_POWER_FLUCTUATION=25
 ```
 
 Configure algorithm parameters in `cmd/main.go`.
