@@ -32,8 +32,7 @@ Build and Run:
 ```
 git clone git@github.com:mesosoftware/blockchain-difficulty.git
 cd blockchain-difficulty
-go build -o simulate cmd/main.go
-./simulate
+go run cmd/main.go
 ```
 
 Configure global settings using environment variables in the project's `.env` file. Default values:

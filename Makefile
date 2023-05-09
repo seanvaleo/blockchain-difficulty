@@ -1,6 +1,6 @@
 # build and save binary
 build:
-	go build -o dsim cmd/main.go
+	go build -o sim cmd/main.go
 
 # build and run without saving binary
 run:
