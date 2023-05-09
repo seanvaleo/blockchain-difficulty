@@ -12,17 +12,17 @@ import (
 )
 
 func main() {
-	log.Info("Running Blockchain Difficulty Simulator")
+	log.Info("Starting Blockchain Difficulty Simulator")
 
 	internal.InitConfig()
 	internal.PrintConfig()
 
 	log.Info("Please wait for results...")
 
-	net1 := network.NewNetwork(1, algorithms.NewEMA(10))
-	net2 := network.NewNetwork(1, algorithms.NewEMA(20))
-	net3 := network.NewNetwork(1, algorithms.NewEMA(30))
-	net4 := network.NewNetwork(1, algorithms.NewEMA(40))
+	net1 := network.NewNetwork(6000000000, algorithms.NewSMA(10))
+	net2 := network.NewNetwork(1000000000, algorithms.NewSMA(20))
+	net3 := network.NewNetwork(1000000000, algorithms.NewEMA(10))
+	net4 := network.NewNetwork(1000000000, algorithms.NewEMA(20))
 
 	ctx := context.Context(context.Background())
 	g, _ := errgroup.WithContext(ctx)

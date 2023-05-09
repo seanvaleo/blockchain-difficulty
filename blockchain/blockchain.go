@@ -4,7 +4,7 @@ package blockchain
 type Block struct {
 	Height         uint64
 	NextDifficulty uint64
-	BlockTime      float64
+	BlockTime      float64 // Time differential since last block
 }
 
 // Blockchain represents a chain of blocks
@@ -52,4 +52,9 @@ func (b *Blockchain) AddBlock(nextDifficulty uint64, blockTime float64) {
 // GetBlock reads a block from the blockchain
 func (b *Blockchain) GetBlock(height uint64) *Block {
 	return b.Chain[height]
+}
+
+// GetLastBlock reads a block from the blockchain
+func (b *Blockchain) GetLastBlock() *Block {
+	return b.Chain[len(b.Chain)-1]
 }

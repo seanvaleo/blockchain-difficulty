@@ -1,6 +1,9 @@
 package network
 
 import (
+	"math/rand"
+	"time"
+
 	"github.com/mesosoftware/blockchain-difficulty/algorithms"
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
 	"github.com/mesosoftware/blockchain-difficulty/internal"
@@ -10,7 +13,7 @@ import (
 // are grouped into one "network" structure
 // They use the same Algorithm
 // They have a copy of the same Blockchain
-// For simplicity, the hashPower represents not the hashPower but the total network hashing power
+// For simplicity, the hashPower represents collective network hashing power
 type Network struct {
 	Algorithm  algorithms.Algorithm
 	Blockchain blockchain.Blockchain
@@ -20,32 +23,42 @@ type Network struct {
 func NewNetwork(startHashPower uint64, algorithm algorithms.Algorithm) Network {
 	return Network{
 		Algorithm:  algorithm,
-		hashPower:  startHashPower,
 		Blockchain: blockchain.New(),
+		hashPower:  startHashPower,
 	}
 }
 
-// MiningSimulation runs the network mining simulation
+// MiningSimulation simulates adding blocks in a varying power network
 func (n *Network) MiningSimulation() func() error {
+	timeElapsedDays := uint32(0)
+	timeElapsedSeconds := uint64(0)
+
 	return func() error {
-		n.variableHashPowerMining()
+		// Add blocks continuously until the simulation is complete
+		for timeElapsedDays < internal.Config.SimulationDays {
 
+			lastBlock := n.Blockchain.GetLastBlock()
+			curDifficulty := lastBlock.NextDifficulty
+
+			// Give the algorithm a chance to modify the difficulty
+			nextDifficulty := n.Algorithm.NextDifficulty(n.Blockchain)
+
+			blockTimeSeconds := float64(curDifficulty) / float64(n.hashPower)
+
+			timeElapsedSeconds += uint64(blockTimeSeconds)
+
+			n.Blockchain.AddBlock(nextDifficulty, blockTimeSeconds)
+
+			// If a day or more has elapsed, update days elapsed, and modify the network hashpower
+			if timeElapsedSeconds >= uint64((timeElapsedDays+1)*24*60*60) {
+				timeElapsedDays = uint32(timeElapsedSeconds / (24 * 60 * 60))
+
+				// Modify hashpower by a random amount with limits of +-25%
+				rand.Seed(time.Now().UnixNano())
+				pctChange := (rand.Float64() * 0.5) - 0.25
+				n.hashPower = uint64(float64(n.hashPower) * (1 + pctChange))
+			}
+		}
 		return nil
-	}
-}
-
-// variableHashPowerMining simulates adding blocks in a varying power network
-func (n *Network) variableHashPowerMining() {
-	for i := uint64(0); i < internal.Config.Blocks; i++ {
-
-		lastBlock := n.Blockchain.GetBlock(n.Blockchain.GetLength())
-		curDifficulty := lastBlock.NextDifficulty
-
-		nextDifficulty := n.Algorithm.NextDifficulty(n.Blockchain)
-		blockTime := float64(curDifficulty) / float64(n.hashPower)
-
-		// TODO modify hashpower
-
-		n.Blockchain.AddBlock(nextDifficulty, blockTime)
 	}
 }

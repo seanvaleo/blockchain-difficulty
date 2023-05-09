@@ -14,18 +14,18 @@ var Config Configuration
 
 // Configuration represents a configuration object
 type Configuration struct {
-	TargetBlockTime uint64
-	Blocks          uint64
-	StartMinerCount uint64
-	MinerHashTH     uint64
+	TargetBlockTimeMinutes       uint64
+	SimulationDays               uint32
+	InitialNetworkHashPower      uint64 // Hashes per second
+	NetworkDailyPowerFluctuation int    // How much the network power varies each day
 }
 
-// InitConfig instantiates Cfg
+// InitConfig instantiates Cfg with defaults or environment variables
 func InitConfig() {
-	Config.TargetBlockTime = uint64(getEnvAsInt("TARGET_BLOCK_TIME", 60))
-	Config.Blocks = uint64(getEnvAsInt("BLOCKS", 1000))
-	Config.StartMinerCount = uint64(getEnvAsInt("START_MINER_COUNT", 100))
-	Config.MinerHashTH = uint64(getEnvAsInt("MINER_HASH_TH", 100))
+	Config.TargetBlockTimeMinutes = getEnvAsUint64("TARGET_BLOCK_TIME_MINUTES", 10)
+	Config.SimulationDays = getEnvAsUint32("SIMULATION_DAYS", 365)
+	Config.InitialNetworkHashPower = getEnvAsUint64("INITIAL_NETWORK_HASH_POWER", 1000000)
+	Config.NetworkDailyPowerFluctuation = getEnvAsInt("NETWORK_DAILY_POWER_FLUCTUATION", 25)
 }
 
 // PrintConfig prints the current configuration in an easy to read format
@@ -48,6 +48,26 @@ func getEnvAsInt(name string, defaultVal int) int {
 	valueStr := getEnv(name, "")
 	if value, err := strconv.Atoi(valueStr); err == nil {
 		return value
+	}
+
+	return defaultVal
+}
+
+// getEnvAsUint64 is a simple helper function to read an environment variable into integer or return a default value
+func getEnvAsUint64(name string, defaultVal uint64) uint64 {
+	valueStr := getEnv(name, "")
+	if value, err := strconv.ParseUint(valueStr, 10, 64); err == nil {
+		return value
+	}
+
+	return defaultVal
+}
+
+// getEnvAsUint32 is a simple helper function to read an environment variable into integer or return a default value
+func getEnvAsUint32(name string, defaultVal uint32) uint32 {
+	valueStr := getEnv(name, "")
+	if value, err := strconv.ParseUint(valueStr, 10, 32); err == nil {
+		return uint32(value)
 	}
 
 	return defaultVal

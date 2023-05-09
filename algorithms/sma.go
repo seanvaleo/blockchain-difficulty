@@ -37,12 +37,12 @@ func (s *SMA) Window() uint64 {
 func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
 	i := blockchain.GetLength()
 	if i < s.window {
-		return blockchain.Chain[i-1].NextDifficulty
+		return blockchain.GetLastBlock().NextDifficulty
 	}
 
 	smaD, smaBT := sma(blockchain, s.window)
 
-	return uint64(smaD * float64(internal.Config.TargetBlockTime) / smaBT)
+	return uint64(smaD * float64(internal.Config.TargetBlockTimeMinutes) / smaBT)
 }
 
 // sma calculates the Simple Moving Averages for Difficulty and BlockTime
@@ -54,8 +54,8 @@ func sma(blockchain blockchain.Blockchain, window uint64) (smaD, smaBT float64) 
 
 	for i > j {
 		i--
-		sumBT += blockchain.Chain[i].BlockTime
-		sumD += float64(blockchain.Chain[i].NextDifficulty)
+		sumBT += blockchain.GetLastBlock().BlockTime
+		sumD += float64(blockchain.GetLastBlock().NextDifficulty)
 	}
 	smaBT = sumBT / float64(window)
 	smaD = sumD / float64(window)

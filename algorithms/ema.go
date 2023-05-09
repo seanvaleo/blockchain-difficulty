@@ -39,7 +39,7 @@ func (e *EMA) Window() uint64 {
 func (e *EMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
 	i := blockchain.GetLength()
 	if i < e.window {
-		return blockchain.Chain[i-1].NextDifficulty
+		return blockchain.GetLastBlock().NextDifficulty
 	}
 
 	emaD, emaBT := ema(blockchain, e.window, e.lastBlockTimeEMA, e.lastDifficultyEMA)
@@ -47,7 +47,7 @@ func (e *EMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
 	e.lastBlockTimeEMA = emaBT
 	e.lastDifficultyEMA = emaD
 
-	return uint64(emaD * float64(internal.Config.TargetBlockTime) / emaBT)
+	return uint64(emaD * float64(internal.Config.TargetBlockTimeMinutes) / emaBT)
 }
 
 // ema calculates the Exponential Moving Averages for Difficulty and BlockTime
@@ -61,8 +61,8 @@ func ema(blockchain blockchain.Blockchain, window uint64, lastBlockTimeEMA, last
 	j := i - window
 	for i > j {
 		i--
-		emaBT = (blockchain.Chain[i].BlockTime-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
-		emaD = (float64(blockchain.Chain[i].NextDifficulty)-lastDifficultyEMA)*(2/(float64(window)+1)) + lastDifficultyEMA
+		emaBT = (blockchain.GetLastBlock().BlockTime-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
+		emaD = (float64(blockchain.GetLastBlock().NextDifficulty)-lastDifficultyEMA)*(2/(float64(window)+1)) + lastDifficultyEMA
 	}
 
 	return

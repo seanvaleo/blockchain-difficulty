@@ -28,14 +28,14 @@ func statistics(n network.Network) (sd, mean float64) {
 
 	var sum, count float64
 	for i < n.Blockchain.GetLength() {
-		sum += float64(n.Blockchain.GetBlock(i).BlockTime)
+		sum += float64(n.Blockchain.GetLastBlock().BlockTime)
 		count++
 		i++
 	}
 	mean = sum / count
 
 	for j < n.Blockchain.GetLength() {
-		sd += math.Pow(float64(n.Blockchain.GetBlock(j).BlockTime)-mean, 2)
+		sd += math.Pow(float64(n.Blockchain.GetLastBlock().BlockTime)-mean, 2)
 		j++
 	}
 	sd = math.Sqrt(sd / count)
