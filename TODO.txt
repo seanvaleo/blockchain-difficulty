@@ -1,3 +1,0 @@
-write tests
-add multiple simulations to vary network rate consistently
-add more algos
