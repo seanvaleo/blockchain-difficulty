@@ -19,8 +19,7 @@ The goal of this project is to provide a simulator to report on the effectivenes
 difficulty algorithms by observing the standard deviation, and mean values of all block intervals
 after adding X blocks.
 
-
-## TODO image here
+![screenshot](screenshot.png)
 
 
 ### Usage
@@ -37,12 +36,8 @@ go build -o simulate cmd/main.go
 ./simulate
 ```
 
-Configure global settings using environment variables in the `.env` file. Default values:
+Configure global settings using environment variables in the project's `.env` file. Default values:
 ```
-TARGET_BLOCK_TIME=60
-BLOCKS=1000
-MINER_COUNT=100
-MINER_HASH_TH=100
 ```
 
 Configure algorithm parameters in `cmd/main.go`.
