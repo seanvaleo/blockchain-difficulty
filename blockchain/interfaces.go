@@ -1,5 +1,6 @@
-package dsim
+package blockchain
 
+/*
 type (
 	// Blockchain is an interface for blockchains
 	Blockchain interface {
@@ -9,10 +10,5 @@ type (
 		AddBlock(uint64)
 		GetBlock(uint64) *Block
 	}
-	// Algorithm is an interface for difficulty algorithms
-	Algorithm interface {
-		Name() string
-		Window() uint64
-		NextDifficulty([]*Block) uint64
-	}
 )
+*/

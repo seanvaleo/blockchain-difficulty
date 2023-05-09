@@ -1,4 +1,4 @@
-package simulator
+package report
 
 import (
 	"fmt"
@@ -6,29 +6,11 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/seanvaleo/dsim/internal/config"
-	"github.com/seanvaleo/dsim/pkg/dsim"
+	"github.com/mesosoftware/blockchain-difficulty/blockchain"
 )
 
-// Run executes the simulation
-func Run(b dsim.Blockchain) func() error {
-	return func() error {
-		consistentHashPower(b)
-		printResults(b)
-
-		return nil
-	}
-}
-
-// consistentHashPower simulates adding blocks in a consistent network
-func consistentHashPower(b dsim.Blockchain) {
-	for i := uint64(0); i < config.Cfg.Blocks; i++ {
-		b.AddBlock(config.Cfg.MinerHashTH * config.Cfg.StartMinerCount)
-	}
-}
-
-// printResults prints the results to std output in a tabulated format
-func printResults(b dsim.Blockchain) {
+// PrintResults prints the results to std output in a tabulated format
+func PrintResults(b blockchain.Blockchain) {
 	sd, mean := statistics(b)
 
 	w := tabwriter.NewWriter(os.Stdout, 28, 8, 0, ' ', 0)
@@ -38,7 +20,7 @@ func printResults(b dsim.Blockchain) {
 
 // statistics generates standard deviation and mean values for the block interval time
 // Skips the blocks that preceded the difficulty adjustment
-func statistics(b dsim.Blockchain) (sd, mean float64) {
+func statistics(b blockchain.Blockchain) (sd, mean float64) {
 	i := b.Algorithm().Window()
 	j := b.Algorithm().Window()
 

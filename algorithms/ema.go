@@ -3,8 +3,7 @@ package algorithms
 import (
 	"fmt"
 
-	"github.com/seanvaleo/dsim/internal/config"
-	"github.com/seanvaleo/dsim/pkg/dsim"
+	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 // EMA implements a Simple Moving Average equation, using the average
@@ -36,7 +35,7 @@ func (e *EMA) Window() uint64 {
 }
 
 // NextDifficulty calculates the next difficulty
-func (e *EMA) NextDifficulty(chain []*dsim.Block) uint64 {
+func (e *EMA) NextDifficulty(chain []*Block) uint64 {
 	i := uint64(len(chain))
 	if i < e.window {
 		return chain[i-1].Difficulty
@@ -47,12 +46,12 @@ func (e *EMA) NextDifficulty(chain []*dsim.Block) uint64 {
 	e.lastBlockTimeEMA = emaBT
 	e.lastDifficultyEMA = emaD
 
-	return uint64(emaD * float64(config.Cfg.TargetBlockTime) / emaBT)
+	return uint64(emaD * float64(internal.Config.TargetBlockTime) / emaBT)
 }
 
 // ema calculates the Exponential Moving Averages for Difficulty and BlockTime
 // uses SMA as the first EMA
-func ema(chain []*dsim.Block, window uint64, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
+func ema(chain []*Block, window uint64, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
 	i := uint64(len(chain))
 	if i == window {
 		return sma(chain, window)

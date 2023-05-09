@@ -1,21 +1,26 @@
 package blockchain
 
-import (
-	"github.com/seanvaleo/dsim/pkg/dsim"
-)
+import "github.com/mesosoftware/blockchain-difficulty/algorithms"
 
-// Blockchain represents a blockchain object
+// Block represents a single block
+type Block struct {
+	Height     uint64
+	Difficulty uint64
+	BlockTime  float64
+}
+
+// Blockchain represents a chain of blocks
 type Blockchain struct {
 	name      string
-	chain     []*dsim.Block
-	algorithm dsim.Algorithm
+	chain     []*Block
+	algorithm algorithms.Algorithm
 }
 
 // New instantiates and returns a blockchain
-func New(name string, algorithm dsim.Algorithm) *Blockchain {
+func New(name string, algorithm algorithms.Algorithm) *Blockchain {
 	blockchain := &Blockchain{
 		name:      name,
-		chain:     make([]*dsim.Block, 0),
+		chain:     make([]*Block, 0),
 		algorithm: algorithm,
 	}
 
@@ -25,7 +30,7 @@ func New(name string, algorithm dsim.Algorithm) *Blockchain {
 }
 
 func (b *Blockchain) addGenesisBlock() {
-	block := &dsim.Block{
+	block := &Block{
 		Height:     0,
 		Difficulty: 10000,
 		BlockTime:  1,
@@ -40,7 +45,7 @@ func (b *Blockchain) Name() string {
 }
 
 // Algorithm returns the algorithm of the blockchain
-func (b *Blockchain) Algorithm() dsim.Algorithm {
+func (b *Blockchain) Algorithm() algorithms.Algorithm {
 	return b.algorithm
 }
 
@@ -53,7 +58,7 @@ func (b *Blockchain) Length() uint64 {
 func (b *Blockchain) AddBlock(hashPower uint64) {
 	difficulty := b.algorithm.NextDifficulty(b.chain)
 
-	block := &dsim.Block{
+	block := &Block{
 		Height:     b.Length(),
 		Difficulty: difficulty,
 		BlockTime:  float64(difficulty) / float64(hashPower),
@@ -63,6 +68,6 @@ func (b *Blockchain) AddBlock(hashPower uint64) {
 }
 
 // GetBlock reads a block from the blockchain
-func (b *Blockchain) GetBlock(height uint64) *dsim.Block {
+func (b *Blockchain) GetBlock(height uint64) *Block {
 	return b.chain[height]
 }

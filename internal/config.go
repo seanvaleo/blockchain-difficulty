@@ -1,4 +1,4 @@
-package config
+package internal
 
 import (
 	"encoding/json"
@@ -10,27 +10,27 @@ import (
 )
 
 // Cfg is a global Config instance
-var Cfg Config
+var Config Configuration
 
-// Config represents a configuration object
-type Config struct {
+// Configuration represents a configuration object
+type Configuration struct {
 	TargetBlockTime uint64
 	Blocks          uint64
 	StartMinerCount uint64
 	MinerHashTH     uint64
 }
 
-// Init instantiates Cfg
-func Init() {
-	Cfg.TargetBlockTime = uint64(getEnvAsInt("TARGET_BLOCK_TIME", 60))
-	Cfg.Blocks = uint64(getEnvAsInt("BLOCKS", 1000))
-	Cfg.StartMinerCount = uint64(getEnvAsInt("START_MINER_COUNT", 100))
-	Cfg.MinerHashTH = uint64(getEnvAsInt("MINER_HASH_TH", 100))
+// InitConfig instantiates Cfg
+func InitConfig() {
+	Config.TargetBlockTime = uint64(getEnvAsInt("TARGET_BLOCK_TIME", 60))
+	Config.Blocks = uint64(getEnvAsInt("BLOCKS", 1000))
+	Config.StartMinerCount = uint64(getEnvAsInt("START_MINER_COUNT", 100))
+	Config.MinerHashTH = uint64(getEnvAsInt("MINER_HASH_TH", 100))
 }
 
-// Print prints the current configuration in an easy to read format
-func Print() {
-	s, _ := json.MarshalIndent(Cfg, "", "\t")
+// PrintConfig prints the current configuration in an easy to read format
+func PrintConfig() {
+	s, _ := json.MarshalIndent(Config, "", "\t")
 	log.Info("Configuration: \n", string(s))
 }
 
