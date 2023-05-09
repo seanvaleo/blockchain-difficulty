@@ -61,7 +61,7 @@ func ema(blockchain blockchain.Blockchain, window uint64, lastBlockTimeEMA, last
 	j := i - window
 	for i > j {
 		i--
-		emaBT = (blockchain.GetLastBlock().BlockTime-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
+		emaBT = (float64(blockchain.GetLastBlock().BlockTimeSeconds)-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
 		emaD = (float64(blockchain.GetLastBlock().NextDifficulty)-lastDifficultyEMA)*(2/(float64(window)+1)) + lastDifficultyEMA
 	}
 

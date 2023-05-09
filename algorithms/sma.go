@@ -54,7 +54,7 @@ func sma(blockchain blockchain.Blockchain, window uint64) (smaD, smaBT float64) 
 
 	for i > j {
 		i--
-		sumBT += blockchain.GetLastBlock().BlockTime
+		sumBT += float64(blockchain.GetLastBlock().BlockTimeSeconds)
 		sumD += float64(blockchain.GetLastBlock().NextDifficulty)
 	}
 	smaBT = sumBT / float64(window)

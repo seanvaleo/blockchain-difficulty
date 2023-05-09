@@ -3,6 +3,7 @@ module github.com/mesosoftware/blockchain-difficulty
 go 1.20
 
 require (
+	github.com/guptarohit/asciigraph v0.5.5
 	github.com/joho/godotenv v1.5.1
 	github.com/sirupsen/logrus v1.9.0
 	golang.org/x/sync v0.2.0

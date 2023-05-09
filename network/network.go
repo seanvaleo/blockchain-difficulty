@@ -20,11 +20,11 @@ type Network struct {
 	hashPower  uint64
 }
 
-func NewNetwork(startHashPower uint64, algorithm algorithms.Algorithm) Network {
+func NewNetwork(startDifficulty uint64, algorithm algorithms.Algorithm) Network {
 	return Network{
 		Algorithm:  algorithm,
-		Blockchain: blockchain.New(),
-		hashPower:  startHashPower,
+		Blockchain: blockchain.New(startDifficulty),
+		hashPower:  internal.Config.InitialNetworkHashPower,
 	}
 }
 
@@ -37,13 +37,19 @@ func (n *Network) MiningSimulation() func() error {
 		// Add blocks continuously until the simulation is complete
 		for timeElapsedDays < internal.Config.SimulationDays {
 
+			var curDifficulty uint64
+			nextDifficulty := curDifficulty
 			lastBlock := n.Blockchain.GetLastBlock()
-			curDifficulty := lastBlock.NextDifficulty
+			if lastBlock == nil {
+				curDifficulty = n.Blockchain.StartDifficulty
+			} else {
+				curDifficulty = lastBlock.NextDifficulty
 
-			// Give the algorithm a chance to modify the difficulty
-			nextDifficulty := n.Algorithm.NextDifficulty(n.Blockchain)
+				// Give the algorithm a chance to modify the difficulty
+				nextDifficulty = n.Algorithm.NextDifficulty(n.Blockchain)
+			}
 
-			blockTimeSeconds := float64(curDifficulty) / float64(n.hashPower)
+			blockTimeSeconds := uint(float64(curDifficulty) / float64(n.hashPower))
 
 			timeElapsedSeconds += uint64(blockTimeSeconds)
 
