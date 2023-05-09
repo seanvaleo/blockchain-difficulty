@@ -11,7 +11,7 @@ Simulate the effectiveness of various blockchain difficulty algorithms in terms 
 In a decentralized proof-of-work blockchain, where no individual controls the timing of block additions, there
 must be a mechanism set in place in order to regulate the desired block frequency.
 
-A so-called 'difficulty algorithm' can be used to adjust the difficulty of mining a new block,
+A so-called 'difficulty adjustment algorithm' can be used to adjust the difficulty of mining a new block,
 based on an estimate of the network's total problem solving power. With all things being equal, the
 block time should approach and maintain its target block time.
 
@@ -29,6 +29,7 @@ Install Dependencies:
 - [Go](https://golang.org/doc/install)
 - [Git](https://git-scm.com/download)
 
+Build and Run:
 ```
 git clone git@github.com:mesosoftware/blockchain-difficulty.git
 cd blockchain-difficulty
@@ -62,10 +63,10 @@ This project ships with examples of the following algorithms, some of which are 
 
 ### Design Decisions
 
-- Network power variability is expressed in terms of one value for net mining power. In the real world, network power varies due to 1) miners going on/offline, and 2) miners having differing computational power. The reasons for the change don't matter to us, we only care about simulating net overall change.
-- Solve time is perfectly correlated to difficulty. In the real world, even with a constant difficulty and network mining power, blocks are solved in an arbitrary amount of time, due to the probablistic nature of the typical PoW mining process. This doesn't matter to us, because on average, block solve time is correlated to difficulty.
-- With the default configuration, the difficulty is initialized to generate the perfect block time for the initial network mining power. As the mining power fluctuates throughout the simulation, the difficulty is adjusted per the selected algorithm. The simulator reports on the standard deviation in block generation times intervals over X blocks. If you wish to also factor in the effectiveness of an algorithm when the initial block difficulty is initially inappropriate for the mining power, that is configurable.
-- With the default configuration, the network mining power can fluctuate by up to 25% per day. This seems to be normal for the Bitcoin blockchain in 2023. This daily fluctation limit is configurable. 
+1) Network power variability is expressed in terms of one value for net mining power. In the real world, network power varies due to a) miners going on/offline, and b) miners having differing computational power. The reasons for the change don't matter to us, we only care about simulating net overall change.
+2) Solve time is perfectly correlated to difficulty. In the real world, even with a constant difficulty and network mining power, blocks are solved in an arbitrary amount of time, due to the probablistic nature of the typical PoW mining process. This doesn't matter to us, because on average, block solve time is correlated to difficulty.
+3) With the default configuration, the difficulty is initialized to generate the perfect block time for the initial network mining power. As the mining power fluctuates throughout the simulation, the difficulty is adjusted per the selected algorithm. The simulator reports on the standard deviation in block generation times intervals over X blocks. If you wish to also factor in the effectiveness of an algorithm when the initial block difficulty is initially inappropriate for the mining power, that is configurable.
+4) With the default configuration, the network mining power can fluctuate by up to 25% per day. This seems to be normal for the Bitcoin blockchain in 2023. This daily fluctation limit is configurable. 
 
 
 ### Research
