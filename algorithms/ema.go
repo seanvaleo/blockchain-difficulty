@@ -3,6 +3,7 @@ package algorithms
 import (
 	"fmt"
 
+	"github.com/mesosoftware/blockchain-difficulty/blockchain"
 	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
@@ -35,13 +36,13 @@ func (e *EMA) Window() uint64 {
 }
 
 // NextDifficulty calculates the next difficulty
-func (e *EMA) NextDifficulty(chain []*Block) uint64 {
-	i := uint64(len(chain))
+func (e *EMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
+	i := blockchain.GetLength()
 	if i < e.window {
-		return chain[i-1].Difficulty
+		return blockchain.Chain[i-1].NextDifficulty
 	}
 
-	emaD, emaBT := ema(chain, e.window, e.lastBlockTimeEMA, e.lastDifficultyEMA)
+	emaD, emaBT := ema(blockchain, e.window, e.lastBlockTimeEMA, e.lastDifficultyEMA)
 
 	e.lastBlockTimeEMA = emaBT
 	e.lastDifficultyEMA = emaD
@@ -51,17 +52,17 @@ func (e *EMA) NextDifficulty(chain []*Block) uint64 {
 
 // ema calculates the Exponential Moving Averages for Difficulty and BlockTime
 // uses SMA as the first EMA
-func ema(chain []*Block, window uint64, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
-	i := uint64(len(chain))
+func ema(blockchain blockchain.Blockchain, window uint64, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
+	i := blockchain.GetLength()
 	if i == window {
-		return sma(chain, window)
+		return sma(blockchain, window)
 	}
 
 	j := i - window
 	for i > j {
 		i--
-		emaBT = (chain[i].BlockTime-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
-		emaD = (float64(chain[i].Difficulty)-lastDifficultyEMA)*(2/(float64(window)+1)) + lastDifficultyEMA
+		emaBT = (blockchain.Chain[i].BlockTime-lastBlockTimeEMA)*(2/(float64(window)+1)) + lastBlockTimeEMA
+		emaD = (float64(blockchain.Chain[i].NextDifficulty)-lastDifficultyEMA)*(2/(float64(window)+1)) + lastDifficultyEMA
 	}
 
 	return

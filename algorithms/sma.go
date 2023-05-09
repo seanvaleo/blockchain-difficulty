@@ -3,6 +3,7 @@ package algorithms
 import (
 	"fmt"
 
+	"github.com/mesosoftware/blockchain-difficulty/blockchain"
 	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
@@ -33,28 +34,28 @@ func (s *SMA) Window() uint64 {
 }
 
 // NextDifficulty calculates the next difficulty
-func (s *SMA) NextDifficulty(chain []*Block) uint64 {
-	i := uint64(len(chain))
+func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
+	i := blockchain.GetLength()
 	if i < s.window {
-		return chain[i-1].Difficulty
+		return blockchain.Chain[i-1].NextDifficulty
 	}
 
-	smaD, smaBT := sma(chain, s.window)
+	smaD, smaBT := sma(blockchain, s.window)
 
 	return uint64(smaD * float64(internal.Config.TargetBlockTime) / smaBT)
 }
 
 // sma calculates the Simple Moving Averages for Difficulty and BlockTime
-func sma(chain []*Block, window uint64) (smaD, smaBT float64) {
+func sma(blockchain blockchain.Blockchain, window uint64) (smaD, smaBT float64) {
 	var sumBT, sumD float64
 
-	i := uint64(len(chain))
+	i := blockchain.GetLength()
 	j := i - window
 
 	for i > j {
 		i--
-		sumBT += chain[i].BlockTime
-		sumD += float64(chain[i].Difficulty)
+		sumBT += blockchain.Chain[i].BlockTime
+		sumD += float64(blockchain.Chain[i].NextDifficulty)
 	}
 	smaBT = sumBT / float64(window)
 	smaD = sumD / float64(window)
