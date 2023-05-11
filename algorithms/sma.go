@@ -55,9 +55,6 @@ func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 
 	smaD, smaBT := s.sma(blockchain, thisBlockTime)
 
-	// For example:
-	// smaD = 100,000,000 ; smaBT = 100 ; targetBT = 600
-	// new difficulty should become 600,000,000
 	return uint64(smaD * (float64(internal.Config.TargetBlockTimeSeconds) / smaBT))
 }
 

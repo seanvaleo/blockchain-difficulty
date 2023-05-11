@@ -4,9 +4,11 @@ import (
 	"testing"
 
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
+	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 func TestNextDifficulty(t *testing.T) {
+	internal.InitConfig()
 	testCases := []struct {
 		name          string
 		blockchain    blockchain.Blockchain
@@ -33,18 +35,15 @@ func TestNextDifficulty(t *testing.T) {
 		{
 			name: "Complete window",
 			blockchain: blockchain.Blockchain{
-				StartDifficulty: 1000000,
 				Chain: []*blockchain.Block{
-					{ThisDifficulty: 2000000, NextDifficulty: 3000000, BlockTimeSeconds: 60},
-					{ThisDifficulty: 3000000, NextDifficulty: 4000000, BlockTimeSeconds: 60},
-					{ThisDifficulty: 4000000, NextDifficulty: 5000000, BlockTimeSeconds: 60},
-					{ThisDifficulty: 5000000, NextDifficulty: 6000000, BlockTimeSeconds: 60},
-					{ThisDifficulty: 6000000, NextDifficulty: 7000000, BlockTimeSeconds: 60},
-					{ThisDifficulty: 7000000, NextDifficulty: 8000000, BlockTimeSeconds: 60},
+					{ThisDifficulty: 1200000000, NextDifficulty: 1400000000, BlockTimeSeconds: 1200},
+					{ThisDifficulty: 1400000000, NextDifficulty: 1600000000, BlockTimeSeconds: 1400},
+					{ThisDifficulty: 1600000000, NextDifficulty: 1800000000, BlockTimeSeconds: 1600},
+					{ThisDifficulty: 1800000000, NextDifficulty: 2000000000, BlockTimeSeconds: 1800},
 				},
 			},
-			thisBlockTime: 60,
-			expected:      36000000,
+			thisBlockTime: 2000,
+			expected:      600000000,
 		},
 	}
 
@@ -52,10 +51,7 @@ func TestNextDifficulty(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			// Calculate the next difficulty
 			nextDifficulty := sma.NextDifficulty(tc.blockchain, tc.thisBlockTime)
-
-			// Check if the result matches the expected value
 			if nextDifficulty != tc.expected {
 				t.Errorf("NextDifficulty: %v, Expected: %v", nextDifficulty, tc.expected)
 			}
@@ -74,18 +70,16 @@ func TestSma(t *testing.T) {
 		{
 			name: "Complete window - Increasing difficulty",
 			blockchain: blockchain.Blockchain{
-				StartDifficulty: 1000000000,
 				Chain: []*blockchain.Block{
-					{ThisDifficulty: 1000000000, NextDifficulty: 1000000000, BlockTimeSeconds: 200},
-					{ThisDifficulty: 1200000000, NextDifficulty: 1200000000, BlockTimeSeconds: 250},
-					{ThisDifficulty: 1500000000, NextDifficulty: 1500000000, BlockTimeSeconds: 280},
-					{ThisDifficulty: 1800000000, NextDifficulty: 1800000000, BlockTimeSeconds: 300},
-					{ThisDifficulty: 1800000000, NextDifficulty: 1800000000, BlockTimeSeconds: 300},
+					{ThisDifficulty: 1200000000, NextDifficulty: 1400000000, BlockTimeSeconds: 1200},
+					{ThisDifficulty: 1400000000, NextDifficulty: 1600000000, BlockTimeSeconds: 1400},
+					{ThisDifficulty: 1600000000, NextDifficulty: 1800000000, BlockTimeSeconds: 1600},
+					{ThisDifficulty: 1800000000, NextDifficulty: 2000000000, BlockTimeSeconds: 1800},
 				},
 			},
-			thisBlockTime: 350,
-			expectedSmaD:  1625000000,
-			expectedSmaBT: 282.5,
+			thisBlockTime: 2000,
+			expectedSmaD:  1600000000,
+			expectedSmaBT: 1600,
 		},
 	}
 
