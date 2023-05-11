@@ -1,6 +1,9 @@
 package network
 
 import (
+	"math/rand"
+	"time"
+
 	"github.com/mesosoftware/blockchain-difficulty/algorithms"
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
 	"github.com/mesosoftware/blockchain-difficulty/internal"
@@ -56,12 +59,11 @@ func (n *Network) MiningSimulation() func() error {
 			if timeElapsedSeconds >= uint64((timeElapsedDays+1)*24*60*60) {
 				timeElapsedDays = uint32(timeElapsedSeconds / (24 * 60 * 60))
 
-				/*
-					// Modify hashpower by a random amount with limits of +-25%
-					rand.Seed(time.Now().UnixNano())
-					pctChange := (rand.Float64() * 0.5) - 0.25
-					n.hashPower = uint64(float64(n.hashPower) * (1 + pctChange))
-				*/
+				// Modify hashpower by a random amount within configured limits from initial hashpower
+				rand.Seed(time.Now().UnixNano())
+				max_change := internal.Config.LimitNetworkHashPowerPctChange
+				pctChange := (rand.Float64() / (float64(max_change) / 2)) - float64(max_change)/100
+				n.hashPower = uint64(float64(internal.Config.InitialNetworkHashPower) * (1 + pctChange))
 			}
 		}
 		return nil

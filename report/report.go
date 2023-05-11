@@ -21,8 +21,8 @@ func PrintResults(n network.Network) {
 	blocksMined := n.Blockchain.GetLength()
 
 	fmt.Println(n.Algorithm.Name())
-	fmt.Printf("StdDev:%v  "+
-		"Mean Block Time:%vs  "+
+	fmt.Printf("StdDev:%.4f  "+
+		"Mean Block Time:%.4fs  "+
 		"First Block Time:%vs  "+
 		"Last Block Time:%vs  "+
 		"Blocks Mined:%v"+
@@ -39,8 +39,6 @@ func PrintResults(n network.Network) {
 		log.Warn("Chart width reduced due to (original chart width > block count). This is to avoid resizing which can results in steps")
 	}
 
-	// Be aware, when setting a width higher than n blocks, the graphing library will
-	// render a diagonal line in steps which can be misinterpreted as data points
 	blockTimesGraph := asciigraph.Plot(blockTimes,
 		asciigraph.SeriesColors(asciigraph.Blue),
 		asciigraph.Width(chartWidth),

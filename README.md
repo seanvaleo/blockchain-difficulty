@@ -40,7 +40,7 @@ Configure global settings using environment variables in the project's `.env` fi
 TARGET_BLOCK_TIME_SECONDS=6000
 SIMULATION_DAYS=365
 INITIAL_NETWORK_HASH_POWER=1000000
-NETWORK_DAILY_POWER_FLUCTUATION=25
+LIMIT_NETWORK_HASH_POWER_PCT_CHANGE=10
 ```
 
 Configure algorithm parameters in `cmd/main.go`.
@@ -64,7 +64,7 @@ This project ships with examples of the following algorithms, some of which are 
 1) Network power variability is expressed in terms of one value for net mining power. In the real world, network power varies due to a) miners going on/offline, and b) miners having differing computational power. The reasons for the change don't matter to us, we only care about simulating net overall change.
 2) Solve time is perfectly correlated to difficulty. In the real world, even with a constant difficulty and network mining power, blocks are solved in an arbitrary amount of time, due to the probablistic nature of the typical PoW mining process. This doesn't matter to us, because on average, block solve time is highly correlated to difficulty.
 3) With the default configuration, the difficulty is initialized to generate the perfect block time for the initial network mining power. As the mining power fluctuates throughout the simulation, the difficulty is adjusted per the selected algorithm. The simulator reports on the standard deviation in block generation times intervals over X blocks. If you wish to also factor in the effectiveness of an algorithm when the initial block difficulty is initially inappropriate for the mining power, that is configurable.
-4) With the default configuration, the network mining power can fluctuate by up to 25% per day. This seems to be normal for the Bitcoin blockchain in 2023. This daily fluctation limit is configurable. 
+4) With the default configuration, the network mining power can fluctuate by up to 10% from its initial power, each day. This seems to be normal for the Bitcoin blockchain in 2023. This daily fluctation limit is configurable. 
 5) The simulation will run for a period of X days, instead of X blocks, since block time will vary and we want to predict effectiveness of algorithms when run for a given period of time.
 6) The highest resolution for block time is Seconds.
 7) In order to reduce the number of variables that impact the results, some parameters to the simulation should be globally applied, for example, Target Block Time. The intention is to compare the effectiveness of the Difficulty Adjustment Algorithms, not the Blockchain implementations.

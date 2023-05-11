@@ -1,7 +1,6 @@
 package blockchain
 
 import (
-	"fmt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -46,7 +45,6 @@ func (b *Blockchain) AddBlock(thisDifficulty, nextDifficulty uint64, blockTimeSe
 	}
 
 	b.Chain = append(b.Chain, block)
-	fmt.Println(block)
 }
 
 // GetBlock reads a block from the blockchain

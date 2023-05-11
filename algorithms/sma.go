@@ -38,33 +38,26 @@ func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 	lenBlocks := blockchain.GetLength()
 
 	if lenBlocks == 0 {
-		fmt.Println(1)
 		return blockchain.StartDifficulty
 	}
 
 	// Don't start calculating until we have a complete window (including this block)
 	if lenBlocks < s.windowBlocks-1 {
-		fmt.Println(2)
 		return blockchain.GetLastBlock().NextDifficulty
 	}
 
 	// Only recalculate on the desired interval
 	if lenBlocks < s.nextRecalculationBlock-1 {
-		fmt.Println(3)
 		return blockchain.GetLastBlock().NextDifficulty
 	}
 
-	fmt.Println(4)
 	s.nextRecalculationBlock += s.intervalBlocks
 
 	smaD, smaBT := sma(blockchain, s.windowBlocks, thisBlockTime)
 
 	// For example:
-	// smaD = 1,000,000,000 ; smaBT = 1,000 ; targetBT = 6000
-	// new difficulty should become 6,000,000,000
-	fmt.Println("smaD: ", smaD)
-	fmt.Println("smaBT: ", smaBT)
-	fmt.Println("new difficulty:", uint64(smaD*(float64(internal.Config.TargetBlockTimeSeconds)/smaBT)))
+	// smaD = 100,000,000 ; smaBT = 100 ; targetBT = 600
+	// new difficulty should become 600,000,000
 	return uint64(smaD * (float64(internal.Config.TargetBlockTimeSeconds) / smaBT))
 }
 
