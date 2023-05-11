@@ -1,7 +1,12 @@
-check: fmt vet lint test
+# build and save binary
+build:
+	go build -o sim cmd/main.go
 
-install: check
-	go build -i -o $(GOPATH)/bin/dsim cmd/main.go
+# build and run without saving binary
+run:
+	go run cmd/main.go
+
+check: fmt vet lint test
 
 vet:
 	go vet ./...
