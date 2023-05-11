@@ -1,8 +1,16 @@
 package blockchain
 
+import (
+	"fmt"
+	"os"
+
+	log "github.com/sirupsen/logrus"
+)
+
 // Block represents a single block
 type Block struct {
-	Height           uint64
+	Height           int    // Block number
+	ThisDifficulty   uint64 // Difficulty when mining this block
 	NextDifficulty   uint64
 	BlockTimeSeconds uint // Time differential since last block
 }
@@ -24,30 +32,48 @@ func New(startDifficulty uint64) Blockchain {
 }
 
 // Length returns the length of the blockchain
-func (b *Blockchain) GetLength() uint64 {
-	return uint64(len(b.Chain))
+func (b *Blockchain) GetLength() int {
+	return int(len(b.Chain))
 }
 
 // AddBlock appends a block to the blockchain
-func (b *Blockchain) AddBlock(nextDifficulty uint64, blockTimeSeconds uint) {
+func (b *Blockchain) AddBlock(thisDifficulty, nextDifficulty uint64, blockTimeSeconds uint) {
 	block := &Block{
-		Height:           b.GetLength(),
+		Height:           b.GetLength() + 1,
+		ThisDifficulty:   thisDifficulty,
 		NextDifficulty:   nextDifficulty,
 		BlockTimeSeconds: blockTimeSeconds,
 	}
 
 	b.Chain = append(b.Chain, block)
+	fmt.Println(block)
 }
 
 // GetBlock reads a block from the blockchain
-func (b *Blockchain) GetBlock(height uint64) *Block {
-	return b.Chain[height]
+func (b *Blockchain) GetBlock(height int) *Block {
+	if height-1 > len(b.Chain) {
+		log.Errorf("Block does not exist in blockchain")
+		os.Exit(1)
+	}
+
+	return b.Chain[height-1]
 }
 
-// GetLastBlock reads a block from the blockchain
+// GetFirstBlock reads the first block from the blockchain
+func (b *Blockchain) GetFirstBlock() *Block {
+	if len(b.Chain) == 0 {
+		log.Errorf("No blocks in blockchain")
+		os.Exit(1)
+	}
+
+	return b.Chain[0]
+}
+
+// GetLastBlock reads the last block from the blockchain
 func (b *Blockchain) GetLastBlock() *Block {
 	if len(b.Chain) == 0 {
-		return nil
+		log.Errorf("No blocks in blockchain")
+		os.Exit(1)
 	}
 
 	return b.Chain[len(b.Chain)-1]

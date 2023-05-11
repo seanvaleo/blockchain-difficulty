@@ -6,50 +6,61 @@ import (
 
 	"github.com/guptarohit/asciigraph"
 	"github.com/mesosoftware/blockchain-difficulty/network"
+	log "github.com/sirupsen/logrus"
 )
-
-// TODO type Results?
 
 // PrintResults prints the results to std output in a tabulated format
 func PrintResults(n network.Network) {
+	chartWidth := 120
+	chartHeight := 10
 	sd, mean := statistics(n)
+	lastBlock := n.Blockchain.GetLastBlock()
+	lastBlockTime := lastBlock.BlockTimeSeconds
+	firstBlock := n.Blockchain.GetFirstBlock()
+	firstBlockTime := firstBlock.BlockTimeSeconds
+	blocksMined := n.Blockchain.GetLength()
 
 	fmt.Println(n.Algorithm.Name())
-	fmt.Printf("StdDev:%v\tMean Block Time:%vm\tFirst Block Time:%vm\tLast Block Time:%vm\tBlocks Mined:%v\n", sd, mean, 20, 30, 34000)
+	fmt.Printf("StdDev:%v  "+
+		"Mean Block Time:%vs  "+
+		"First Block Time:%vs  "+
+		"Last Block Time:%vs  "+
+		"Blocks Mined:%v"+
+		"\n",
+		sd, mean, firstBlockTime, lastBlockTime, blocksMined)
 
-	// fmt.Println(n.Blockchain.Chain)
-	/*
-		blockTimes := make([]float64, n.Blockchain.GetLength())
-		for i, block := range n.Blockchain.Chain {
-			blockTimes[i] = float64(block.BlockTimeSeconds)
-		}
-		fmt.Println(blockTimes)
-	*/
+	blockTimes := make([]float64, n.Blockchain.GetLength())
+	for i, block := range n.Blockchain.Chain {
+		blockTimes[i] = float64(block.BlockTimeSeconds)
+	}
 
-	blockTimes := []float64{3, 2, 6, 2, 6, 2, 5, 6, 7, 8, 2, 2, 6, 2, 6, 2, 5, 6, 7, 8, 2, 6, 2, 6, 2, 5, 6, 7, 8, 2}
+	if len(blockTimes) < chartWidth {
+		chartWidth = 0
+		log.Warn("Chart width reduced due to (original chart width > block count). This is to avoid resizing which can results in steps")
+	}
 
-	blockTimesGraph := asciigraph.Plot(blockTimes, asciigraph.SeriesColors(asciigraph.Blue))
+	// Be aware, when setting a width higher than n blocks, the graphing library will
+	// render a diagonal line in steps which can be misinterpreted as data points
+	blockTimesGraph := asciigraph.Plot(blockTimes,
+		asciigraph.SeriesColors(asciigraph.Blue),
+		asciigraph.Width(chartWidth),
+		asciigraph.Height(chartHeight))
 
 	fmt.Println(blockTimesGraph)
 }
 
 // statistics generates standard deviation and mean values for the block interval time
-// Skips the blocks that preceded the difficulty adjustment
 func statistics(n network.Network) (sd, mean float64) {
-	i := n.Algorithm.Window()
-	j := n.Algorithm.Window()
-
 	var sum, count float64
-	for i < n.Blockchain.GetLength() {
-		sum += float64(n.Blockchain.GetLastBlock().BlockTimeSeconds)
+
+	for _, block := range n.Blockchain.Chain {
+		sum += float64(block.BlockTimeSeconds)
 		count++
-		i++
 	}
 	mean = sum / count
 
-	for j < n.Blockchain.GetLength() {
-		sd += math.Pow(float64(n.Blockchain.GetLastBlock().BlockTimeSeconds)-mean, 2)
-		j++
+	for _, block := range n.Blockchain.Chain {
+		sd += math.Pow(float64(block.BlockTimeSeconds)-mean, 2)
 	}
 	sd = math.Sqrt(sd / count)
 

@@ -12,15 +12,15 @@ import (
 // difficulty
 type EMA struct {
 	name              string
-	window            uint64
+	window            int
 	lastDifficultyEMA float64
 	lastBlockTimeEMA  float64
 }
 
 // NewEMA instantiates and returns a new EMA
-func NewEMA(window uint64) *EMA {
+func NewEMA(window int) *EMA {
 	return &EMA{
-		name:   "EMA-" + fmt.Sprint(window),
+		name:   fmt.Sprintf("EMA-%v", window),
 		window: window,
 	}
 }
@@ -30,14 +30,13 @@ func (e *EMA) Name() string {
 	return e.name
 }
 
-// Window returns the algorithm window
-func (e *EMA) Window() uint64 {
-	return e.window
-}
-
 // NextDifficulty calculates the next difficulty
 func (e *EMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
 	i := blockchain.GetLength()
+	if i == 0 {
+		return blockchain.StartDifficulty
+	}
+
 	if i < e.window {
 		return blockchain.GetLastBlock().NextDifficulty
 	}
@@ -47,15 +46,15 @@ func (e *EMA) NextDifficulty(blockchain blockchain.Blockchain) uint64 {
 	e.lastBlockTimeEMA = emaBT
 	e.lastDifficultyEMA = emaD
 
-	return uint64(emaD * float64(internal.Config.TargetBlockTimeMinutes) / emaBT)
+	return uint64(emaD * float64(internal.Config.TargetBlockTimeSeconds) / emaBT)
 }
 
 // ema calculates the Exponential Moving Averages for Difficulty and BlockTime
 // uses SMA as the first EMA
-func ema(blockchain blockchain.Blockchain, window uint64, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
+func ema(blockchain blockchain.Blockchain, window int, lastBlockTimeEMA, lastDifficultyEMA float64) (emaD, emaBT float64) {
 	i := blockchain.GetLength()
 	if i == window {
-		return sma(blockchain, window)
+		return sma(blockchain, window, 1)
 	}
 
 	j := i - window

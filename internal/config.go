@@ -14,7 +14,7 @@ var Config Configuration
 
 // Configuration represents a configuration object
 type Configuration struct {
-	TargetBlockTimeMinutes       uint64
+	TargetBlockTimeSeconds       uint64
 	SimulationDays               uint32
 	InitialNetworkHashPower      uint64 // Hashes per second
 	NetworkDailyPowerFluctuation int    // How much the network power varies each day
@@ -22,8 +22,8 @@ type Configuration struct {
 
 // InitConfig instantiates Cfg with defaults or environment variables
 func InitConfig() {
-	Config.TargetBlockTimeMinutes = getEnvAsUint64("TARGET_BLOCK_TIME_MINUTES", 10)
-	Config.SimulationDays = getEnvAsUint32("SIMULATION_DAYS", 365)
+	Config.TargetBlockTimeSeconds = getEnvAsUint64("TARGET_BLOCK_TIME_SECONDS", 6000)
+	Config.SimulationDays = getEnvAsUint32("SIMULATION_DAYS", 1)
 	Config.InitialNetworkHashPower = getEnvAsUint64("INITIAL_NETWORK_HASH_POWER", 1000000)
 	Config.NetworkDailyPowerFluctuation = getEnvAsInt("NETWORK_DAILY_POWER_FLUCTUATION", 25)
 }

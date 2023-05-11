@@ -37,7 +37,7 @@ go run cmd/main.go
 
 Configure global settings using environment variables in the project's `.env` file. Options/defaults:
 ```
-TARGET_BLOCK_TIME_MINUTES=10
+TARGET_BLOCK_TIME_SECONDS=6000
 SIMULATION_DAYS=365
 INITIAL_NETWORK_HASH_POWER=1000000
 NETWORK_DAILY_POWER_FLUCTUATION=25
@@ -65,27 +65,27 @@ This project ships with examples of the following algorithms, some of which are 
 2) Solve time is perfectly correlated to difficulty. In the real world, even with a constant difficulty and network mining power, blocks are solved in an arbitrary amount of time, due to the probablistic nature of the typical PoW mining process. This doesn't matter to us, because on average, block solve time is highly correlated to difficulty.
 3) With the default configuration, the difficulty is initialized to generate the perfect block time for the initial network mining power. As the mining power fluctuates throughout the simulation, the difficulty is adjusted per the selected algorithm. The simulator reports on the standard deviation in block generation times intervals over X blocks. If you wish to also factor in the effectiveness of an algorithm when the initial block difficulty is initially inappropriate for the mining power, that is configurable.
 4) With the default configuration, the network mining power can fluctuate by up to 25% per day. This seems to be normal for the Bitcoin blockchain in 2023. This daily fluctation limit is configurable. 
+5) The simulation will run for a period of X days, instead of X blocks, since block time will vary and we want to predict effectiveness of algorithms when run for a given period of time.
+6) The highest resolution for block time is Seconds.
+7) In order to reduce the number of variables that impact the results, some parameters to the simulation should be globally applied, for example, Target Block Time. The intention is to compare the effectiveness of the Difficulty Adjustment Algorithms, not the Blockchain implementations.
 
 
 ### Research
 
 - [Difficulty Wiki](https://en.bitcoin.it/wiki/Difficulty)
+- [Summary of Difficulty Algorithms](https://github.com/zawy12/difficulty-algorithms/issues/50)
 - [Why the Bitcoin target block time is 10 minutes](https://bitcoin.stackexchange.com/questions/1863/why-was-the-target-block-time-chosen-to-be-10-minutes)
 - [Why the Bitcoin adjustment interval is 2 weeks](https://bitcoin.stackexchange.com/questions/65868/why-was-it-chosen-to-adjust-difficulty-every-2-weeks-rather-than-2-days-or-ever)
-- [Summary of Difficulty Algorithms](https://github.com/zawy12/difficulty-algorithms/issues/50)
 - [Live BTC statistics](https://siastats.info/mining)
 - [LWMA algorithm](https://github.com/zawy12/difficulty-algorithms/issues/3)
 - [ASERT/others](https://reference.cash/protocol/blockchain/proof-of-work/difficulty-adjustment-algorithm)
-- [ETH Homestead](https://ethereum.stackexchange.com/questions/5913/how-does-the-ethereum-homestead-difficulty-adjustment-algorithm-work)
 - [ETH Homestead](https://blog.cotten.io/ethereums-eip-2-4-15-second-block-target-98d4c11017e1)
-- [ETH Homestead](https://copyprogramming.com/howto/how-does-the-ethereum-homestead-difficulty-adjustment-algorithm-work)
-- [ETH Homestead](https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum)
 - [Digishield](https://dgbwiki.com/index.php?title=DigiShield)
-- [Digishield](https://github.com/zawy12/difficulty-algorithms/issues/7)
 - [Bitcoin Proof-of-Work](https://github.com/bitcoin/bitcoin/blob/master/src/pow.cpp)
 - [ETH DAA Implementation](https://github.com/ethereum/go-ethereum/blob/81d328a73e00454912edf79e74f7d041467fa2aa/consensus/ethash/difficulty.go#L82)
 - [Attacks](https://old.reddit.com/r/Bitcoin/comments/mtugta/mentor_monday_april_19_2021_ask_all_your_bitcoin/gv86j6b/?context=5)
-
+- [Selfish Mining Against Multiple DAA's](https://eprint.iacr.org/2020/094.pdf)
+- [Economic Analysis of Difficulty Adjustment Algorithms](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3410460)
 
 
 

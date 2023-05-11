@@ -1,9 +1,6 @@
 package network
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/mesosoftware/blockchain-difficulty/algorithms"
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
 	"github.com/mesosoftware/blockchain-difficulty/internal"
@@ -37,32 +34,34 @@ func (n *Network) MiningSimulation() func() error {
 		// Add blocks continuously until the simulation is complete
 		for timeElapsedDays < internal.Config.SimulationDays {
 
-			var curDifficulty uint64
-			nextDifficulty := curDifficulty
-			lastBlock := n.Blockchain.GetLastBlock()
-			if lastBlock == nil {
-				curDifficulty = n.Blockchain.StartDifficulty
-			} else {
-				curDifficulty = lastBlock.NextDifficulty
+			var thisDifficulty uint64
+			var nextDifficulty uint64
 
-				// Give the algorithm a chance to modify the difficulty
-				nextDifficulty = n.Algorithm.NextDifficulty(n.Blockchain)
+			if n.Blockchain.GetLength() == 0 {
+				thisDifficulty = n.Blockchain.StartDifficulty
+			} else {
+				thisDifficulty = n.Blockchain.GetLastBlock().NextDifficulty
 			}
 
-			blockTimeSeconds := uint(float64(curDifficulty) / float64(n.hashPower))
+			thisBlockTimeSeconds := uint(float64(thisDifficulty) / float64(n.hashPower))
 
-			timeElapsedSeconds += uint64(blockTimeSeconds)
+			// Give the algorithm a chance to modify the difficulty
+			// We need to hand it information on the current block time and difficulty
+			nextDifficulty = n.Algorithm.NextDifficulty(n.Blockchain, thisBlockTimeSeconds)
 
-			n.Blockchain.AddBlock(nextDifficulty, blockTimeSeconds)
+			n.Blockchain.AddBlock(thisDifficulty, nextDifficulty, thisBlockTimeSeconds)
 
+			timeElapsedSeconds += uint64(thisBlockTimeSeconds)
 			// If a day or more has elapsed, update days elapsed, and modify the network hashpower
 			if timeElapsedSeconds >= uint64((timeElapsedDays+1)*24*60*60) {
 				timeElapsedDays = uint32(timeElapsedSeconds / (24 * 60 * 60))
 
-				// Modify hashpower by a random amount with limits of +-25%
-				rand.Seed(time.Now().UnixNano())
-				pctChange := (rand.Float64() * 0.5) - 0.25
-				n.hashPower = uint64(float64(n.hashPower) * (1 + pctChange))
+				/*
+					// Modify hashpower by a random amount with limits of +-25%
+					rand.Seed(time.Now().UnixNano())
+					pctChange := (rand.Float64() * 0.5) - 0.25
+					n.hashPower = uint64(float64(n.hashPower) * (1 + pctChange))
+				*/
 			}
 		}
 		return nil

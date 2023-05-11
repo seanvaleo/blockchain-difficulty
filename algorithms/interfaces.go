@@ -6,7 +6,6 @@ type (
 	// Algorithm is an interface for difficulty algorithms
 	Algorithm interface {
 		Name() string
-		Window() uint64
-		NextDifficulty(blockchain.Blockchain) uint64
+		NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uint) uint64
 	}
 )
