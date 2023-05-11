@@ -17,7 +17,9 @@ block time should approach and maintain its target block time.
 
 The goal of this project is to provide a simulator to report on the effectiveness of various
 difficulty algorithms by observing the standard deviation, and mean values of all block intervals
-after adding X blocks.
+after X days.
+
+Screenshot:
 
 ![screenshot](screenshot.png)
 
@@ -45,7 +47,7 @@ LIMIT_NETWORK_HASH_POWER_PCT_CHANGE=10
 
 Configure network and algorithm parameters in `cmd/main.go` like so:
 ```go
-// initial difficulty = 600000000, window = 10, interval = 10
+// Initial Difficulty = 600000000, Window = 10, Interval = 10
 net1 := network.NewNetwork(600000000, algorithms.NewSMA(10, 10))
 ```
 
