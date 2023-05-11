@@ -53,7 +53,7 @@ func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 
 	s.nextRecalculationBlock += s.intervalBlocks
 
-	smaD, smaBT := sma(blockchain, s.windowBlocks, thisBlockTime)
+	smaD, smaBT := s.sma(blockchain, thisBlockTime)
 
 	// For example:
 	// smaD = 100,000,000 ; smaBT = 100 ; targetBT = 600
@@ -62,11 +62,11 @@ func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 }
 
 // sma calculates the Simple Moving Averages for Difficulty and BlockTime
-func sma(blockchain blockchain.Blockchain, windowBlocks int, thisBlockTime uint) (smaD, smaBT float64) {
+func (s *SMA) sma(blockchain blockchain.Blockchain, thisBlockTime uint) (smaD, smaBT float64) {
 	var sumBT, sumD float64
 
-	i := blockchain.GetLength()                    // Number of last block added (not including This block)
-	j := blockchain.GetLength() - windowBlocks + 1 // Number of first block in window
+	i := blockchain.GetLength()                      // Number of last block added (not including This block)
+	j := blockchain.GetLength() - s.windowBlocks + 1 // Number of first block in window
 
 	// Add values from the current block being processed
 	sumBT += float64(thisBlockTime)
@@ -77,8 +77,8 @@ func sma(blockchain blockchain.Blockchain, windowBlocks int, thisBlockTime uint)
 		sumBT += float64(blockchain.GetBlock(i).BlockTimeSeconds)
 		sumD += float64(blockchain.GetBlock(i).ThisDifficulty)
 	}
-	smaBT = sumBT / float64(windowBlocks)
-	smaD = sumD / float64(windowBlocks)
+	smaBT = sumBT / float64(s.windowBlocks)
+	smaD = sumD / float64(s.windowBlocks)
 
 	return
 }
