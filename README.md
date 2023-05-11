@@ -37,14 +37,17 @@ go run cmd/main.go
 
 Configure global settings using environment variables in the project's `.env` file. Options/defaults:
 ```
-TARGET_BLOCK_TIME_SECONDS=6000
+TARGET_BLOCK_TIME_SECONDS=600
 SIMULATION_DAYS=365
 INITIAL_NETWORK_HASH_POWER=1000000
 LIMIT_NETWORK_HASH_POWER_PCT_CHANGE=10
 ```
 
-Configure algorithm parameters in `cmd/main.go`.
-
+Configure network and algorithm parameters in `cmd/main.go` like so:
+```go
+// initial difficulty = 600000000, window = 10, interval = 10
+net1 := network.NewNetwork(600000000, algorithms.NewSMA(10, 10))
+```
 
 ### Algorithms
 

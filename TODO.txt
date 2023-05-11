@@ -1,18 +1,29 @@
-CURRENT TODO
-algorithms/ fix algorithms
-    why does the ema/sma look at nextdifficult??
-algorithms/ add algorithms
-
-README add a screenshot of output
-README add an example of tuning parameters under "configure algorithm parameters"
-create a release 1.0
-let zawy12 know about my project, ask for feedback
-marketing? twitter, hackernews, reddit?
+PRE-1.0
+----------------------------
+1) add all other algorithms*
+2) README update screenshot of output
+3) create a release 1.0
 
 
 
+POST-1.0
+----------------------------
+1) Print the results of each algorithm as soon as that goroutine has finished
+- Ensure results are printed in serial instead of writing at the same time
+- Consider the use of a shared channel and a single writer
 
-algorithms:
+2) Consider this:
+- What if blocktime became 3 days?
+- Currently, mining power only adjusts between blocks therefore mining power did not vary within that 3 day period
+
+3) Make mining power changes the same for all algos running
+
+
+
+
+
+
+*algorithms:
 BTC
 new difficulty = old difficulty *  ((2160 * 10mins) / time for last 20160)
 	window configurable
@@ -35,7 +46,7 @@ DigiShield
 
 LWMA
 linear weighted moving average
-	weighting configurable. sample size configurable.
+	weighting configurable?. sample size configurable.
 
 EMA
 exponential moving average
@@ -44,58 +55,4 @@ exponential moving average
 SMA
 simple moving average
 	window configurable, interval configurable
-
-
-
-
-tmp:
-variance describes volatility from the mean. average of the squared differences from the mean
-calculate mean
-for each data point subtract the mean
-square each result to get all positives
-sum all these values
-divide by (number of data points minus 1) i.e. 10 - 1 = 9
-
-stddev is sqrt of variance
-lower stddev = less volatility
-
-run over a really high number of blocks like a million, for LLN and for fun
-
-ETH Homestead https://ethereum.stackexchange.com/questions/5913/how-does-the-ethereum-homestead-difficulty-adjustment-
-  algorithm-work                                                                                                      
-ETH Homestead https://blog.cotten.io/ethereums-eip-2-4-15-second-block-target-98d4c11017e1                        
-ETH Homestead https://copyprogramming.com/howto/how-does-the-ethereum-homestead-difficulty-adjustment-algorithm-work
-ETH Homestead https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum
-
-start current difficulty at 6 000 000 000
-start hashpower at 1 000 000
-target block time is 10 minutes(6000 seconds)
-
-type results?
-
-for each variable you should decide if its
-global
-- network
-- blockchain
--algo
-
-nextRecalc a property of the blockchain instead of the algo
-
-
-run with 1 day to see zoomed in  resolution
-
-
-
-
-
-TODO
-1) Print the results of each algorithm as soon as that goroutine has finished
-- Ensure results are printed in serial instead of writing at the same time
-- Consider the use of a shared channel and a single writer
-
-2) Consider this:
-- What if blocktime became 3 days?
-- Currently, mining power only adjusts between blocks therefore mining power did not vary within that 3 day period
-
-3) Make mining power changes the same for all algos running
 
