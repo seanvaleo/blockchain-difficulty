@@ -17,7 +17,7 @@ block time should approach and maintain its target block time.
 
 The goal of this project is to provide a simulator to report on the effectiveness of various
 difficulty algorithms by observing the standard deviation, and mean values of all block intervals
-after X days.
+after a period of days.
 
 Screenshot:
 

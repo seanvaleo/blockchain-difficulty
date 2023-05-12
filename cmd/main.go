@@ -37,10 +37,7 @@ func main() {
 		return
 	}
 
-	report.PrintResults(net1)
-	report.PrintResults(net2)
-	report.PrintResults(net3)
-	report.PrintResults(net4)
+	report.PrintResults([]network.Network{net1, net2, net3, net4})
 
 	log.Info("All results generated")
 }
