@@ -20,7 +20,18 @@ func PrintResults(networks []network.Network) {
 	page := components.NewPage()
 	page.Initialization.PageTitle = "DAA Simulation Results"
 
-	for _, n := range networks {
+	// Define global upper/lower limits for charts
+	var minY uint = math.MaxUint
+	var maxY uint = 0
+
+	// Add data to charts
+	lineCharts := make([]*charts.Line, len(networks))
+	for i, n := range networks {
+		lineCharts[i] = charts.NewLine()
+		lineChartAddData(lineCharts[i], n.Blockchain, &minY, &maxY)
+	}
+
+	for i, n := range networks {
 		sd, mean := statistics(n)
 		lastBlock := n.Blockchain.GetLastBlock()
 		lastBlockTime := lastBlock.BlockTimeSeconds
@@ -40,8 +51,8 @@ func PrintResults(networks []network.Network) {
 		fmt.Println("-----")
 
 		// Add results to graphical charts page
-		chart := lineChart(n.Algorithm.Name(), results, n.Blockchain)
-		page.AddCharts(chart)
+		lineChartSetOpts(lineCharts[i], n.Algorithm.Name(), results, minY, maxY)
+		page.AddCharts(lineCharts[i])
 	}
 
 	// Create html doc
@@ -75,18 +86,38 @@ func statistics(n network.Network) (sd, mean float64) {
 	return sd, mean
 }
 
-func lineChart(name, results string, blockchain blockchain.Blockchain) *charts.Line {
+func lineChartAddData(lineChart *charts.Line, blockchain blockchain.Blockchain, minY, maxY *uint) {
 	// Extract block time values from blockchain
 	x := make([]int, blockchain.GetLength())
 	y := make([]opts.LineData, blockchain.GetLength())
 	for i, block := range blockchain.Chain {
-		y[i] = opts.LineData{Value: block.BlockTimeSeconds}
 		x[i] = i
+		y[i] = opts.LineData{Value: block.BlockTimeSeconds}
+		if block.BlockTimeSeconds > *maxY {
+			*maxY = block.BlockTimeSeconds
+		}
+		if block.BlockTimeSeconds < *minY {
+			*minY = block.BlockTimeSeconds
+		}
 	}
 
+	// Add data to the chart instance
+	lineChart.SetXAxis(x).
+		AddSeries("Block Time (s)", y).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(
+				opts.LineChart{
+					Smooth: false,
+				},
+			),
+		)
+
+	return
+}
+
+func lineChartSetOpts(lineChart *charts.Line, name, results string, minY, maxY uint) {
 	// Create a new Line Chart instance
-	line := charts.NewLine()
-	line.SetGlobalOptions(
+	lineChart.SetGlobalOptions(
 		charts.WithTitleOpts(
 			opts.Title{Title: name, Subtitle: results},
 		),
@@ -99,19 +130,8 @@ func lineChart(name, results string, blockchain blockchain.Blockchain) *charts.L
 		}),
 		charts.WithYAxisOpts(opts.YAxis{
 			Scale: true,
+			Min:   minY,
+			Max:   maxY,
 		}),
 	)
-
-	// Add data to the chart instance
-	line.SetXAxis(x).
-		AddSeries("Block Time (s)", y).
-		SetSeriesOptions(
-			charts.WithLineChartOpts(
-				opts.LineChart{
-					Smooth: false,
-				},
-			),
-		)
-
-	return line
 }
