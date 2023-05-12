@@ -12,17 +12,19 @@ import (
 // difficulty
 type SMA struct {
 	name                   string
-	windowBlocks           int // Block data in sample
 	intervalBlocks         int // Frequency of difficulty re-calculation
+	windowBlocks           int // Block data in sample
 	nextRecalculationBlock int
 }
 
 // NewSMA instantiates and returns a new SMA
-func NewSMA(windowBlocks, intervalBlocks int) *SMA {
+func NewSMA(intervalBlocks, windowBlocks int) *SMA {
 	return &SMA{
-		name:                   fmt.Sprintf("SMA-Window-%v-Interval-%v", windowBlocks, intervalBlocks),
-		windowBlocks:           windowBlocks,
+		name: fmt.Sprintf("SMA: Recalculate at every %v blocks using a %v block window",
+			intervalBlocks,
+			windowBlocks),
 		intervalBlocks:         intervalBlocks,
+		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,
 	}
 }

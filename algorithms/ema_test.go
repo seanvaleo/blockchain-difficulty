@@ -7,7 +7,7 @@ import (
 	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
-func TestSMANextDifficulty(t *testing.T) {
+func TestEMANextDifficulty(t *testing.T) {
 	internal.InitConfig()
 	testCases := []struct {
 		name          string
@@ -47,11 +47,11 @@ func TestSMANextDifficulty(t *testing.T) {
 		},
 	}
 
-	s := NewSMA(5, 5)
+	e := NewEMA(5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			nextDifficulty := s.NextDifficulty(tc.blockchain, tc.thisBlockTime)
+			nextDifficulty := e.NextDifficulty(tc.blockchain, tc.thisBlockTime)
 			if nextDifficulty != tc.expected {
 				t.Errorf("NextDifficulty: %v, Expected: %v", nextDifficulty, tc.expected)
 			}
@@ -59,16 +59,18 @@ func TestSMANextDifficulty(t *testing.T) {
 	}
 }
 
-func TestSma(t *testing.T) {
+func TestEma(t *testing.T) {
 	testCases := []struct {
 		name          string
 		blockchain    blockchain.Blockchain
+		lastEmaBT     float64
+		lastEmaD      float64
 		thisBlockTime uint
-		expectedSmaBT float64
-		expectedSmaD  float64
+		expectedEmaBT float64
+		expectedEmaD  float64
 	}{
 		{
-			name: "Complete window - Increasing difficulty",
+			name: "Complete window - Increasing difficulty - No last EMA",
 			blockchain: blockchain.Blockchain{
 				Chain: []*blockchain.Block{
 					{ThisDifficulty: 1200000000, NextDifficulty: 1400000000, BlockTimeSeconds: 1200},
@@ -77,22 +79,40 @@ func TestSma(t *testing.T) {
 					{ThisDifficulty: 1800000000, NextDifficulty: 2000000000, BlockTimeSeconds: 1800},
 				},
 			},
+			lastEmaBT:     0,
+			lastEmaD:      0,
 			thisBlockTime: 2000,
-			expectedSmaBT: 1600,
-			expectedSmaD:  1600000000,
+			expectedEmaBT: 1600,
+			expectedEmaD:  1600000000,
+		},
+		{
+			name: "Complete window - Increasing difficulty - Existing last EMA",
+			blockchain: blockchain.Blockchain{
+				Chain: []*blockchain.Block{
+					{ThisDifficulty: 1200000000, NextDifficulty: 1400000000, BlockTimeSeconds: 1200},
+					{ThisDifficulty: 1400000000, NextDifficulty: 1600000000, BlockTimeSeconds: 1400},
+					{ThisDifficulty: 1600000000, NextDifficulty: 1800000000, BlockTimeSeconds: 1600},
+					{ThisDifficulty: 1800000000, NextDifficulty: 2000000000, BlockTimeSeconds: 1800},
+				},
+			},
+			lastEmaBT:     1600,
+			lastEmaD:      1600000000,
+			thisBlockTime: 2000,
+			expectedEmaBT: 1600,
+			expectedEmaD:  1600000000,
 		},
 	}
 
-	s := NewSMA(5, 5)
+	e := NewEMA(5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			smaD, smaBT := s.sma(tc.blockchain, tc.thisBlockTime)
-			if smaD != tc.expectedSmaD {
-				t.Errorf("Expected SMA difficulty: %f, but got: %f", tc.expectedSmaD, smaD)
+			emaD, emaBT := e.ema(tc.blockchain, tc.thisBlockTime)
+			if emaD != tc.expectedEmaD {
+				t.Errorf("Expected EMA difficulty: %f, but got: %f", tc.expectedEmaD, emaD)
 			}
-			if smaBT != tc.expectedSmaBT {
-				t.Errorf("Expected SMA block time: %f, but got: %f", tc.expectedSmaBT, smaBT)
+			if emaBT != tc.expectedEmaBT {
+				t.Errorf("Expected EMA block time: %f, but got: %f", tc.expectedEmaBT, emaBT)
 			}
 		})
 	}

@@ -47,7 +47,7 @@ LIMIT_NETWORK_HASH_POWER_PCT_CHANGE=10
 
 Configure network and algorithm parameters in `cmd/main.go` like so:
 ```go
-// Initial Difficulty = 600000000, Window = 10, Interval = 10
+// Initial Difficulty = 600000000, Interval = 10, Window = 10
 net1 := network.NewNetwork(600000000, algorithms.NewSMA(10, 10))
 ```
 
