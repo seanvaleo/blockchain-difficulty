@@ -1,16 +1,13 @@
 PRE-1.0
 ----------------------------
 1) add all other algorithms*
-2) README update screenshot of output
-3) create a release 1.0
+create a release 1.0
 
 
 
 POST-1.0
 ----------------------------
-1) Print the results of each algorithm as soon as that goroutine has finished
-- Ensure results are printed in serial instead of writing at the same time
-- Consider the use of a shared channel and a single writer
+1) Add standard deviation charts
 
 2) Consider this:
 - What if blocktime became 3 days?
@@ -24,10 +21,6 @@ POST-1.0
 
 
 *algorithms:
-BTC
-new difficulty = old difficulty *  ((2160 * 10mins) / time for last 20160)
-	window configurable
-
 ETH 
 block_diff = parent_diff + parent_diff // 2048 * 
       max(1 - (block_timestamp - parent_timestamp) // 10, -99) + 
@@ -47,12 +40,4 @@ DigiShield
 LWMA
 linear weighted moving average
 	weighting configurable?. sample size configurable.
-
-EMA
-exponential moving average
-	window configurable, interval configurable
-
-SMA
-simple moving average
-	window configurable, interval configurable
 
