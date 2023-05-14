@@ -1,0 +1,99 @@
+package algorithms
+
+import (
+	"testing"
+
+	"github.com/mesosoftware/blockchain-difficulty/blockchain"
+	"github.com/mesosoftware/blockchain-difficulty/internal"
+)
+
+func TestLWMANextDifficulty(t *testing.T) {
+	internal.InitConfig()
+	testCases := []struct {
+		name          string
+		blockchain    blockchain.Blockchain
+		thisBlockTime uint
+		expected      uint64
+	}{
+		{
+			name:          "Empty blockchain",
+			blockchain:    blockchain.New(1000000),
+			thisBlockTime: 60,
+			expected:      1000000,
+		},
+		{
+			name: "Incomplete window",
+			blockchain: blockchain.Blockchain{
+				StartDifficulty: 1000000,
+				Chain: []*blockchain.Block{
+					{ThisDifficulty: 2000000, NextDifficulty: 3000000, BlockTimeSeconds: 60},
+				},
+			},
+			thisBlockTime: 60,
+			expected:      3000000,
+		},
+		{
+			name: "Complete window",
+			blockchain: blockchain.Blockchain{
+				Chain: []*blockchain.Block{
+					{ThisDifficulty: 1200000000, NextDifficulty: 1400000000, BlockTimeSeconds: 1200},
+					{ThisDifficulty: 1400000000, NextDifficulty: 1600000000, BlockTimeSeconds: 1400},
+					{ThisDifficulty: 1600000000, NextDifficulty: 1800000000, BlockTimeSeconds: 1600},
+					{ThisDifficulty: 1800000000, NextDifficulty: 2000000000, BlockTimeSeconds: 1800},
+				},
+			},
+			thisBlockTime: 2000,
+			expected:      600000000,
+		},
+	}
+
+	s := NewLWMA(5, 5)
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			nextDifficulty := s.NextDifficulty(tc.blockchain, tc.thisBlockTime)
+			if nextDifficulty != tc.expected {
+				t.Errorf("NextDifficulty: %v, Expected: %v", nextDifficulty, tc.expected)
+			}
+		})
+	}
+}
+
+func TestLwma(t *testing.T) {
+	testCases := []struct {
+		name           string
+		blockchain     blockchain.Blockchain
+		thisBlockTime  uint
+		expectedLwmaBT float64
+		expectedLwmaD  float64
+	}{
+		{
+			name: "Complete window - Increasing difficulty",
+			blockchain: blockchain.Blockchain{
+				Chain: []*blockchain.Block{
+					{ThisDifficulty: 1200000000, NextDifficulty: 1400000000, BlockTimeSeconds: 1200},
+					{ThisDifficulty: 1400000000, NextDifficulty: 1600000000, BlockTimeSeconds: 1400},
+					{ThisDifficulty: 1600000000, NextDifficulty: 1800000000, BlockTimeSeconds: 1600},
+					{ThisDifficulty: 1800000000, NextDifficulty: 2000000000, BlockTimeSeconds: 1800},
+				},
+			},
+			thisBlockTime:  2000,
+			expectedLwmaBT: 1733 + (float64(1) / 3),
+			expectedLwmaD:  1733333333 + (float64(1) / 3),
+		},
+	}
+
+	s := NewLWMA(5, 5)
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			lwmaD, lwmaBT := s.lwma(tc.blockchain, tc.thisBlockTime)
+			if lwmaD != tc.expectedLwmaD {
+				t.Errorf("Expected LWMA difficulty: %f, but got: %f", tc.expectedLwmaD, lwmaD)
+			}
+			if lwmaBT != tc.expectedLwmaBT {
+				t.Errorf("Expected LWMA block time: %f, but got: %f", tc.expectedLwmaBT, lwmaBT)
+			}
+		})
+	}
+}
