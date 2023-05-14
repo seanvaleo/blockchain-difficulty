@@ -1,5 +1,4 @@
 PRE-1.0 ----------------------------
-- add a test for lwma
 - add all other algorithms*
 - create a release 1.0
 
