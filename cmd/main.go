@@ -19,16 +19,14 @@ func main() {
 
 	log.Info("Please wait for results...")
 
-	net0 := network.NewNetwork(600000000, algorithms.NewBTC())
-	net1 := network.NewNetwork(600000000, algorithms.NewSMA(1, 60))
+	net1 := network.NewNetwork(600000000, algorithms.NewBTC())
 	net2 := network.NewNetwork(600000000, algorithms.NewSMA(1440, 10080))
-	net3 := network.NewNetwork(600000000, algorithms.NewEMA(1, 60))
-	net4 := network.NewNetwork(600000000, algorithms.NewEMA(1440, 10080))
+	net3 := network.NewNetwork(600000000, algorithms.NewEMA(1440, 10080))
+	net4 := network.NewNetwork(600000000, algorithms.NewLWMA(1440, 10080))
 
 	ctx := context.Context(context.Background())
 	g, _ := errgroup.WithContext(ctx)
 
-	g.Go(net0.MiningSimulation())
 	g.Go(net1.MiningSimulation())
 	g.Go(net2.MiningSimulation())
 	g.Go(net3.MiningSimulation())
@@ -39,7 +37,7 @@ func main() {
 		return
 	}
 
-	report.PrintResults([]network.Network{net0, net1, net2, net3, net4})
+	report.PrintResults([]network.Network{net1, net2, net3, net4})
 
 	log.Info("All results generated")
 }
