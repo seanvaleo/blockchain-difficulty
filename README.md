@@ -19,7 +19,7 @@ The goal of this project is to provide a simulator to report on the effectivenes
 difficulty algorithms by observing the standard deviation, and mean values of all block intervals
 after a period of days.
 
-Screenshot:
+Example Report:
 
 ![screenshot](screenshot.png)
 
