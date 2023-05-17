@@ -53,15 +53,23 @@ net1 := network.NewNetwork(600000000, algorithms.NewSMA(10, 10))
 
 ### Algorithms
 
-This project ships with examples of the following algorithms, some of which are parameterized for tuning:
+This project ships with examples of the following difficulty adjustment algorithms, some of which are parameterized for tuning:
 
 - Bitcoin
 - Ethereum (Homestead)
-- ASERT
-- Digishield
 - LWMA
 - EMA
 - SMA
+
+The `Bitcoin` algorithm calculates the average time taken to mine the last 2016 blocks and adjusts the difficulty every 2016 blocks accordingly. The algorithm aims to maintain a block time of 10 minutes, by using the average time, the target time, and the difficulty of the last block to adjust the difficulty of mining the next 2016 blocks.
+
+The `Ethereum` Homestead algorithm  calculates a new difficulty value after each block is mined. It uses the difficulty value and block time of the previous block, to target a 15 second block time by establishing a 10–20 second block time window where no difficulty changes occur. It also includes logic to gradually increase difficulty every 100,000 blocks to facilitate the transition from a PoW protocol to a PoS protocol.
+
+The `LWMA` (Linearly Weighted Moving Average) algorithm calculates the average time taken to mine the last X blocks. However, the LWMA algorithm assigns more weight to recent blocks while decreasing the weight for older blocks in a linear fashion. This allows it to respond more quickly to changes in hash rate compared to the SMA algorithm.
+
+The `EMA` (Exponential Moving Average) algorithm calculates the average time taken to mine the last X blocks, giving more weight to recent blocks. By using an exponential smoothing factor, the algorithm should result in the difficulty adjusting quickly to changes in network hash rate. The EMA algorithm is effective at responding to sudden changes in mining power, providing a supposedly more adaptive and responsive difficulty adjustment mechanism.
+
+The `SMA` (Simple Moving Average) algorithm calculates the average time taken to mine the last X blocks, considering each block equally. The algorithm adjusts the difficulty periodically based on this average, aiming to maintain a target block time. However, since the SMA algorithm assigns the same weight to all blocks, it may not respond quickly to sudden changes in network hash rate. As a result, it can lead to a period of "lag" until the difficulty adjusts appropriately.
 
 
 ### Design Decisions
@@ -78,7 +86,7 @@ This project ships with examples of the following algorithms, some of which are 
 ### Research
 
 - [Difficulty Wiki](https://en.bitcoin.it/wiki/Difficulty)
-- [Summary of Difficulty Algorithms](https://github.com/zawy12/difficulty-algorithms/issues/50)
+- [Analysis of Difficulty Algorithms](https://github.com/zawy12/difficulty-algorithms/issues/50)
 - [Why the Bitcoin target block time is 10 minutes](https://bitcoin.stackexchange.com/questions/1863/why-was-the-target-block-time-chosen-to-be-10-minutes)
 - [Why the Bitcoin adjustment interval is 2 weeks](https://bitcoin.stackexchange.com/questions/65868/why-was-it-chosen-to-adjust-difficulty-every-2-weeks-rather-than-2-days-or-ever)
 - [Live BTC statistics](https://siastats.info/mining)
@@ -93,5 +101,9 @@ This project ships with examples of the following algorithms, some of which are 
 - [Economic Analysis of Difficulty Adjustment Algorithms](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3410460)
 
 
+### Contributing
 
-
+Please feel free to contribute to the project by:
+- Adding algorithms
+- Fixing bugs
+- Proposing new features in GitHub Issues
