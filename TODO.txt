@@ -1,5 +1,7 @@
 PRE-1.0 ----------------------------
-- testing
+- testing/code review
+  - eth tests have invalid difficulty expectations
+  - html file size is relatively large
 - create a release 1.0
 
 
@@ -10,13 +12,12 @@ POST-1.0 ----------------------------
   - Currently, mining power only adjusts between blocks therefore mining power did not vary within that 2 day period
 - Make mining power changes the same for all algorithms running
 - More configurable mining and attack simulation
-- Add other algorithms:
+  - ever increasing/decreasing hashpower modes
+- Add other algorithms i.e:
     ASERT
         exponent = (time_delta - ideal_block_time * (height_delta + 1)) / halflife
             next_target = anchor_target * 2**(exponent)
         (see https://reference.cash/protocol/blockchain/proof-of-work/difficulty-adjustment-algorithm)
          halflife configurable	
-    DigiShield
-        (see https://github.com/zawy12/difficulty-algorithms/issues/7)
 
 

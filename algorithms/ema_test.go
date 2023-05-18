@@ -47,7 +47,7 @@ func TestEMANextDifficulty(t *testing.T) {
 		},
 	}
 
-	e := NewEMA(5, 5)
+	e := NewEMA(600, 5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -103,7 +103,7 @@ func TestEma(t *testing.T) {
 		},
 	}
 
-	e := NewEMA(5, 5)
+	e := NewEMA(600, 5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
-	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 // SMA implements a Simple Moving Average equation, using the average
@@ -12,18 +11,20 @@ import (
 // difficulty
 type SMA struct {
 	name                   string
+	target                 uint
 	intervalBlocks         int // Frequency of difficulty re-calculation
 	windowBlocks           int // Block data in sample
 	nextRecalculationBlock int
 }
 
 // NewSMA instantiates and returns a new SMA
-func NewSMA(intervalBlocks, windowBlocks int) *SMA {
+func NewSMA(target uint, intervalBlocks, windowBlocks int) *SMA {
 	return &SMA{
 		name: fmt.Sprintf("SMA: Recalculate at every %v blocks using a %v block window. Target is %ds",
 			intervalBlocks,
 			windowBlocks,
-			internal.Config.TargetBlockTimeSeconds),
+			target),
+		target:                 target,
 		intervalBlocks:         intervalBlocks,
 		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,
@@ -58,7 +59,7 @@ func (s *SMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 
 	smaD, smaBT := s.sma(blockchain, thisBlockTime)
 
-	return uint64(smaD * (float64(internal.Config.TargetBlockTimeSeconds) / smaBT))
+	return uint64(smaD * (float64(s.target) / smaBT))
 }
 
 // sma calculates the Simple Moving Averages for Difficulty and BlockTime

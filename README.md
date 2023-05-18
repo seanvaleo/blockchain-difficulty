@@ -39,7 +39,6 @@ go run cmd/main.go
 
 Configure global settings using environment variables in the project's `.env` file. Options/defaults:
 ```
-TARGET_BLOCK_TIME_SECONDS=600
 SIMULATION_DAYS=365
 INITIAL_NETWORK_HASH_POWER=1000000
 LIMIT_NETWORK_HASH_POWER_PCT_CHANGE=10
@@ -47,8 +46,8 @@ LIMIT_NETWORK_HASH_POWER_PCT_CHANGE=10
 
 Configure network and algorithm parameters in `cmd/main.go` like so:
 ```go
-// Initial Difficulty = 600000000, Interval = 10, Window = 10
-net1 := network.NewNetwork(600000000, algorithms.NewSMA(10, 10))
+// Initial Difficulty = 600000000, Target(s) = 600, Block Interval = 10, Window = 10
+n := network.NewNetwork(600000000, algorithms.NewSMA(600, 10, 10))
 ```
 
 ### Algorithms
@@ -80,7 +79,6 @@ The `LWMA` (Linearly Weighted Moving Average) algorithm calculates the average t
 4) With the default configuration, the network mining power can fluctuate by up to 10% from its initial power, each day. This seems to be normal for the Bitcoin blockchain in 2023. This daily fluctation limit is configurable. 
 5) The simulation will run for a period of X days, instead of X blocks, since block time will vary and we want to predict effectiveness of algorithms when run for a given period of time.
 6) The highest resolution for block time is Seconds.
-7) In order to reduce the number of variables that impact the results, some parameters to the simulation should be globally applied, for example, Target Block Time. The intention is to compare the effectiveness of the Difficulty Adjustment Algorithms, not the Blockchain implementations.
 
 
 ### Research

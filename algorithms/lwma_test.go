@@ -47,7 +47,7 @@ func TestLWMANextDifficulty(t *testing.T) {
 		},
 	}
 
-	s := NewLWMA(5, 5)
+	s := NewLWMA(600, 5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -83,7 +83,7 @@ func TestLwma(t *testing.T) {
 		},
 	}
 
-	s := NewLWMA(5, 5)
+	s := NewLWMA(600, 5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

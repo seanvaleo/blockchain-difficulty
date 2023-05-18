@@ -130,8 +130,8 @@ func lineChartSetOpts(lineChart *charts.Line, name, results string, minY, maxY u
 		}),
 		charts.WithYAxisOpts(opts.YAxis{
 			Scale: true,
-			Min:   minY,
-			Max:   maxY,
+			//			Min:   minY,
+			//			Max:   maxY,
 		}),
 	)
 }

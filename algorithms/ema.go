@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
-	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 // EMA implements an Exponential Moving Average equation, using an exponentially weighted average
@@ -12,6 +11,7 @@ import (
 // difficulty
 type EMA struct {
 	name                   string
+	target                 uint
 	intervalBlocks         int // Frequency of difficulty re-calculation
 	windowBlocks           int // Block data in sample
 	nextRecalculationBlock int
@@ -20,12 +20,13 @@ type EMA struct {
 }
 
 // NewEMA instantiates and returns a new EMA
-func NewEMA(intervalBlocks, windowBlocks int) *EMA {
+func NewEMA(target uint, intervalBlocks, windowBlocks int) *EMA {
 	return &EMA{
 		name: fmt.Sprintf("EMA: Recalculate at every %v blocks using a %v block window. Target is %ds",
 			intervalBlocks,
 			windowBlocks,
-			internal.Config.TargetBlockTimeSeconds),
+			target),
+		target:                 target,
 		intervalBlocks:         intervalBlocks,
 		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,
@@ -63,7 +64,7 @@ func (e *EMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 	e.lastEmaD = emaD
 	e.lastEmaBT = emaBT
 
-	return uint64(emaD * (float64(internal.Config.TargetBlockTimeSeconds) / emaBT))
+	return uint64(emaD * (float64(e.target) / emaBT))
 }
 
 // ema calculates the Exponential Moving Averages for Difficulty and BlockTime
@@ -72,7 +73,7 @@ func (e *EMA) ema(blockchain blockchain.Blockchain, thisBlockTime uint) (emaD, e
 
 	// For the first EMA calculation, use the SMA
 	if e.lastEmaD == 0 {
-		s := NewSMA(e.windowBlocks, e.intervalBlocks)
+		s := NewSMA(e.target, e.windowBlocks, e.intervalBlocks)
 		return s.sma(blockchain, thisBlockTime)
 	}
 

@@ -47,7 +47,7 @@ func TestSMANextDifficulty(t *testing.T) {
 		},
 	}
 
-	s := NewSMA(5, 5)
+	s := NewSMA(600, 5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -83,7 +83,7 @@ func TestSma(t *testing.T) {
 		},
 	}
 
-	s := NewSMA(5, 5)
+	s := NewSMA(600, 5, 5)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

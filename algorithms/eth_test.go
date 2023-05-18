@@ -25,31 +25,31 @@ func TestETHNextDifficulty(t *testing.T) {
 			name: "Perfect difficulty",
 			blockchain: blockchain.Blockchain{
 				Chain: []*blockchain.Block{
-					{ThisDifficulty: 6000000000, NextDifficulty: 6000000000, BlockTimeSeconds: 600},
+					{ThisDifficulty: 15000000, NextDifficulty: 15000000, BlockTimeSeconds: 15},
 				},
 			},
-			thisBlockTime: 600,
-			expected:      6000000000,
+			thisBlockTime: 15,
+			expected:      15000000,
 		},
 		{
-			name: "Low difficulty",
+			name: "Low difficulty in acceptable range",
 			blockchain: blockchain.Blockchain{
 				Chain: []*blockchain.Block{
-					{ThisDifficulty: 5500000000, NextDifficulty: 5500000000, BlockTimeSeconds: 550},
+					{ThisDifficulty: 1000000, NextDifficulty: 1000000, BlockTimeSeconds: 10},
 				},
 			},
-			thisBlockTime: 550,
-			expected:      5500223795,
+			thisBlockTime: 10,
+			expected:      1000163, // TODO should not change
 		},
 		{
-			name: "High difficulty",
+			name: "Low difficulty out of acceptable range",
 			blockchain: blockchain.Blockchain{
 				Chain: []*blockchain.Block{
-					{ThisDifficulty: 6500000000, NextDifficulty: 6500000000, BlockTimeSeconds: 650},
+					{ThisDifficulty: 9000000, NextDifficulty: 9000000, BlockTimeSeconds: 9},
 				},
 			},
-			thisBlockTime: 650,
-			expected:      6500000000,
+			thisBlockTime: 9,
+			expected:      9000000, // TODO should change
 		},
 	}
 

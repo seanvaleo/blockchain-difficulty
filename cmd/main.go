@@ -21,10 +21,10 @@ func main() {
 
 	networks := []network.Network{
 		network.NewNetwork(600000000, algorithms.NewBTC()),
-		network.NewNetwork(600000000, algorithms.NewETH()),
-		network.NewNetwork(600000000, algorithms.NewSMA(1440, 10080)),
-		network.NewNetwork(600000000, algorithms.NewEMA(1440, 10080)),
-		network.NewNetwork(600000000, algorithms.NewLWMA(1440, 10080)),
+		network.NewNetwork(15000000, algorithms.NewETH()),
+		network.NewNetwork(100000000, algorithms.NewSMA(100, 1440, 10080)),
+		network.NewNetwork(100000000, algorithms.NewEMA(100, 1440, 10080)),
+		network.NewNetwork(100000000, algorithms.NewLWMA(100, 1440, 10080)),
 	}
 
 	ctx := context.Context(context.Background())

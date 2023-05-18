@@ -5,16 +5,16 @@ import (
 	"math"
 
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
-	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 // ETH implements the Ethereum difficulty adjustment algorithm, which is:
-// New Difficulty = Old Difficulty + (Old Difficulty // 2048 *             6 + (1000/(2048 *
-//     max(1 - (block timestamp - parent timestamp) // 10, -99) +          600/10 = 60. 1-60 = -59 (lower limit -99 does not apply))
+// New Difficulty = Old Difficulty + (Old Difficulty // 2048 *
+//     max(1 - (block timestamp - parent timestamp) // 10, -99) +
 //     int(2**((block number // 100000) - 2)))
 // to estimate a more suitable difficulty
 type ETH struct {
 	name                   string
+	target                 uint
 	intervalBlocks         int // Frequency of difficulty re-calculation
 	windowBlocks           int // Block data in sample
 	nextRecalculationBlock int
@@ -23,11 +23,11 @@ type ETH struct {
 // NewETH instantiates and returns a new ETH
 func NewETH() *ETH {
 	return &ETH{
-		name: fmt.Sprintf("Ethereum: Recalculate at every 1 block using a 1 block window. Target is %ds",
-			internal.Config.TargetBlockTimeSeconds),
-		intervalBlocks:         1, // fixed
-		windowBlocks:           1, // fixed
-		nextRecalculationBlock: 1, // fixed
+		name:                   fmt.Sprintf("Ethereum: Recalculate at every 1 block using a 1 block window. Target is 15s"),
+		target:                 15, // fixed
+		intervalBlocks:         1,  // fixed
+		windowBlocks:           1,  // fixed
+		nextRecalculationBlock: 1,  // fixed
 	}
 }
 
@@ -59,13 +59,12 @@ func (e *ETH) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 
 	oldDifficulty := float64(blockchain.GetLastBlock().NextDifficulty)
 	thisBlockNumber := float64(lenBlocks + 1)
-	target := float64(internal.Config.TargetBlockTimeSeconds) // Target is 15 seconds in ETH, but made configurable here for comparison's sake
 
 	return uint64(oldDifficulty +
 		float64((oldDifficulty/2048)*
 			math.Max(-99, 1-
-				(float64(thisBlockTime)/target))+
+				(float64(thisBlockTime)/float64(e.target)))+
 			math.Pow(2,
-				float64((thisBlockNumber/100000)-
+				float64((int(thisBlockNumber)/100000)-
 					2))))
 }

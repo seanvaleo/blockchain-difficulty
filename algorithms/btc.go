@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
-	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 // BTC implements the Bitcoin difficulty adjustment algorithm, which is:
@@ -12,6 +11,7 @@ import (
 // to estimate a more suitable difficulty
 type BTC struct {
 	name                   string
+	target                 uint
 	intervalBlocks         int // Frequency of difficulty re-calculation
 	windowBlocks           int // Block data in sample
 	nextRecalculationBlock int
@@ -20,8 +20,8 @@ type BTC struct {
 // NewBTC instantiates and returns a new BTC
 func NewBTC() *BTC {
 	return &BTC{
-		name: fmt.Sprintf("Bitcoin: Recalculate at every 2016 blocks using a 2016 block window. Target is %ds",
-			internal.Config.TargetBlockTimeSeconds),
+		name:                   fmt.Sprintf("Bitcoin: Recalculate at every 2016 blocks using a 2016 block window. Target is 600s"),
+		target:                 600,  // fixed
 		intervalBlocks:         2016, // fixed
 		windowBlocks:           2016, // fixed
 		nextRecalculationBlock: 2016, // fixed
@@ -56,7 +56,7 @@ func (b *BTC) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime uin
 
 	time := b.sumBlockTimes(blockchain, thisBlockTime)
 
-	return uint64(float64(blockchain.GetLastBlock().NextDifficulty) * (float64(b.windowBlocks*600) / float64(time)))
+	return uint64(float64(blockchain.GetLastBlock().NextDifficulty) * (float64(b.windowBlocks) * float64(b.target)) / float64(time))
 }
 
 func (b *BTC) sumBlockTimes(blockchain blockchain.Blockchain, thisBlockTime uint) (sum uint) {

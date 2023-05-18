@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/mesosoftware/blockchain-difficulty/blockchain"
-	"github.com/mesosoftware/blockchain-difficulty/internal"
 )
 
 // LWMA implements a Linear Weighted Moving Average equation, using the
@@ -12,18 +11,20 @@ import (
 // estimate a more suitable difficulty
 type LWMA struct {
 	name                   string
+	target                 uint
 	intervalBlocks         int // Frequency of difficulty re-calculation
 	windowBlocks           int // Block data in sample
 	nextRecalculationBlock int
 }
 
 // NewLWMA instantiates and returns a new LWMA
-func NewLWMA(intervalBlocks, windowBlocks int) *LWMA {
+func NewLWMA(target uint, intervalBlocks, windowBlocks int) *LWMA {
 	return &LWMA{
 		name: fmt.Sprintf("LWMA: Recalculate at every %v blocks using a %v block window. Target is %ds",
 			intervalBlocks,
 			windowBlocks,
-			internal.Config.TargetBlockTimeSeconds),
+			target),
+		target:                 target,
 		intervalBlocks:         intervalBlocks,
 		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,
@@ -58,7 +59,7 @@ func (l *LWMA) NextDifficulty(blockchain blockchain.Blockchain, thisBlockTime ui
 
 	lwmaD, lwmaBT := l.lwma(blockchain, thisBlockTime)
 
-	return uint64(lwmaD * (float64(internal.Config.TargetBlockTimeSeconds) / lwmaBT))
+	return uint64(lwmaD * (float64(l.target) / lwmaBT))
 }
 
 // lwma calculates the Linear Weighted Moving Averages for Difficulty and BlockTime
