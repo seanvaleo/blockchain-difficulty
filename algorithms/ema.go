@@ -22,9 +22,10 @@ type EMA struct {
 // NewEMA instantiates and returns a new EMA
 func NewEMA(intervalBlocks, windowBlocks int) *EMA {
 	return &EMA{
-		name: fmt.Sprintf("EMA: Recalculate at every %v blocks using a %v block window",
+		name: fmt.Sprintf("EMA: Recalculate at every %v blocks using a %v block window. Target is %ds",
 			intervalBlocks,
-			windowBlocks),
+			windowBlocks,
+			internal.Config.TargetBlockTimeSeconds),
 		intervalBlocks:         intervalBlocks,
 		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,

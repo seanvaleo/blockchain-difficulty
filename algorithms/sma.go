@@ -20,9 +20,10 @@ type SMA struct {
 // NewSMA instantiates and returns a new SMA
 func NewSMA(intervalBlocks, windowBlocks int) *SMA {
 	return &SMA{
-		name: fmt.Sprintf("SMA: Recalculate at every %v blocks using a %v block window",
+		name: fmt.Sprintf("SMA: Recalculate at every %v blocks using a %v block window. Target is %ds",
 			intervalBlocks,
-			windowBlocks),
+			windowBlocks,
+			internal.Config.TargetBlockTimeSeconds),
 		intervalBlocks:         intervalBlocks,
 		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,

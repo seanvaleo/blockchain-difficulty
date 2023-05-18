@@ -1,10 +1,5 @@
 PRE-1.0 ----------------------------
-- add ethereum algorithm:
-    block_diff = parent_diff + parent_diff // 2048 * 
-          max(1 - (block_timestamp - parent_timestamp) // 10, -99) + 
-          int(2**((block.number // 100000) - 2))
-    window is every block, sample is every block!
-    nothing configurable
+- testing
 - create a release 1.0
 
 

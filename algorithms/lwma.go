@@ -20,9 +20,10 @@ type LWMA struct {
 // NewLWMA instantiates and returns a new LWMA
 func NewLWMA(intervalBlocks, windowBlocks int) *LWMA {
 	return &LWMA{
-		name: fmt.Sprintf("LWMA: Recalculate at every %v blocks using a %v block window",
+		name: fmt.Sprintf("LWMA: Recalculate at every %v blocks using a %v block window. Target is %ds",
 			intervalBlocks,
-			windowBlocks),
+			windowBlocks,
+			internal.Config.TargetBlockTimeSeconds),
 		intervalBlocks:         intervalBlocks,
 		windowBlocks:           windowBlocks,
 		nextRecalculationBlock: intervalBlocks,
