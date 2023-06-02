@@ -6,7 +6,7 @@
 Simulate the effectiveness of various blockchain difficulty algorithms in terms of volatility and accuracy.
 
 
-### Background
+## 📄 Background
 
 In a decentralized proof-of-work blockchain, where no individual controls the timing of block additions, there
 must be a mechanism set in place in order to regulate the desired block frequency.
@@ -24,7 +24,7 @@ Example Report:
 ![screenshot](screenshot.png)
 
 
-### Usage
+## 🚀 Try It Out
 
 Install Dependencies:
 - [Go](https://golang.org/doc/install)
@@ -50,7 +50,7 @@ Configure network and algorithm parameters in `cmd/main.go` like so:
 n := network.NewNetwork(600000000, algorithms.NewSMA(600, 10, 10))
 ```
 
-### Algorithms
+## 🪄 Algorithms
 
 This project ships with examples of the following difficulty adjustment algorithms, some of which are parameterized for tuning:
 
@@ -71,7 +71,7 @@ The `EMA` (Exponential Moving Average) algorithm calculates the average time tak
 The `LWMA` (Linearly Weighted Moving Average) algorithm calculates the average time taken to mine the last X blocks. However, the LWMA algorithm assigns more weight to recent blocks while decreasing the weight for older blocks in a linear fashion. This allows it to respond more quickly to changes in hash rate compared to the SMA algorithm.
 
 
-### Design Decisions
+## 📐 Design Decisions
 
 1) Network power variability is expressed in terms of one value for net mining power. In the real world, network power varies due to a) miners going on/offline, and b) miners having differing computational power. The reasons for the change don't matter to us, we only care about simulating net overall change.
 2) Solve time is perfectly correlated to difficulty. In the real world, even with a constant difficulty and network mining power, blocks are solved in an arbitrary amount of time, due to the probablistic nature of the typical PoW mining process. This doesn't matter to us, because on average, block solve time is highly correlated to difficulty.
@@ -81,7 +81,7 @@ The `LWMA` (Linearly Weighted Moving Average) algorithm calculates the average t
 6) The highest resolution for block time is Seconds.
 
 
-### Research
+## 🔬 Research
 
 - [Difficulty Wiki](https://en.bitcoin.it/wiki/Difficulty)
 - [Analysis of Difficulty Algorithms](https://github.com/zawy12/difficulty-algorithms/issues/50)
@@ -99,7 +99,7 @@ The `LWMA` (Linearly Weighted Moving Average) algorithm calculates the average t
 - [Economic Analysis of Difficulty Adjustment Algorithms](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3410460)
 
 
-### Contributing
+## ✏️ Contributing
 
 Please feel free to contribute to the project by:
 - Adding algorithms
