@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/seanvaleo/dsim/actions/workflows/go.yml/badge.svg)](https://github.com/seanvaleo/dsim/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/seanvaleo/dsim)](https://goreportcard.com/report/github.com/seanvaleo/dsim)
 
-Simulate the effectiveness of various blockchain difficulty algorithms in terms of volatility and accuracy.
+I created this simulator to evaluate the effectiveness of various blockchain difficulty algorithms in terms of volatility and accuracy.
 
 
 ## 📄 Background
@@ -19,7 +19,7 @@ The goal of this project is to provide a simulator to report on the effectivenes
 difficulty algorithms by observing the standard deviation, and mean values of all block intervals
 after a period of days.
 
-Example Report:
+Example Results:
 
 ![screenshot](screenshot.png)
 
